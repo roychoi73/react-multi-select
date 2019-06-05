@@ -212,7 +212,7 @@ const styles = {
         outline: "none",
     },
     searchFocused: {
-        borderColor: "#78c008",
+        borderColor: "#4285f4",
     },
     searchContainer: {
         width: "100%",
