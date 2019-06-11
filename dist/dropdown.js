@@ -1,12 +1,30 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];for (var key in source) {
+            if (Object.prototype.hasOwnProperty.call(source, key)) {
+                target[key] = source[key];
+            }
+        }
+    }return target;
+};
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
 var _react = require('react');
 
@@ -16,19 +34,32 @@ var _loadingIndicator = require('./loading-indicator.js');
 
 var _loadingIndicator2 = _interopRequireDefault(_loadingIndicator);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
 /**
  * A generic dropdown component.  It takes the children of the component
  * and hosts it in the component.  When the component is selected, it
  * drops-down the contentComponent and applies the contentProps.
  */
-
 
 var Dropdown = function (_Component) {
     _inherits(Dropdown, _Component);
@@ -75,13 +106,11 @@ var Dropdown = function (_Component) {
         }, _this.handleFocus = function (e) {
             var hasFocus = _this.state.hasFocus;
 
-
             if (e.target === _this.wrapper && !hasFocus) {
                 _this.setState({ hasFocus: true });
             }
         }, _this.handleBlur = function (e) {
             var hasFocus = _this.state.hasFocus;
-
 
             if (hasFocus) {
                 _this.setState({ hasFocus: false });
@@ -93,14 +122,12 @@ var Dropdown = function (_Component) {
         }, _this.handleHover = function (toggleExpanded) {
             var shouldToggleOnHover = _this.props.shouldToggleOnHover;
 
-
             if (shouldToggleOnHover) {
                 _this.toggleExpanded(toggleExpanded);
             }
         }, _this.toggleExpanded = function (value) {
             var isLoading = _this.props.isLoading;
             var expanded = _this.state.expanded;
-
 
             if (isLoading) {
                 return;
@@ -135,15 +162,10 @@ var Dropdown = function (_Component) {
                 ContentComponent = _props.contentComponent,
                 contentProps = _props.contentProps;
 
-
-            return _react2.default.createElement(
-                'div',
-                {
-                    className: 'dropdown-content',
-                    style: styles.panelContainer
-                },
-                _react2.default.createElement(ContentComponent, contentProps)
-            );
+            return _react2.default.createElement('div', {
+                className: 'dropdown-content',
+                style: styles.panelContainer
+            }, _react2.default.createElement(ContentComponent, contentProps));
         }
     }, {
         key: 'render',
@@ -158,7 +180,6 @@ var Dropdown = function (_Component) {
                 isLoading = _props2.isLoading,
                 disabled = _props2.disabled;
 
-
             var expandedHeaderStyle = expanded ? styles.dropdownHeaderExpanded : undefined;
 
             var focusedHeaderStyle = hasFocus ? styles.dropdownHeaderFocused : undefined;
@@ -169,69 +190,46 @@ var Dropdown = function (_Component) {
 
             var headingStyle = _extends({}, styles.dropdownChildren, disabled ? styles.disabledDropdownChildren : {});
 
-            return _react2.default.createElement(
-                'div',
-                {
-                    className: 'dropdown',
-                    tabIndex: '0',
-                    role: 'combobox',
-                    'aria-expanded': expanded,
-                    'aria-readonly': 'true',
-                    'aria-disabled': disabled,
-                    style: styles.dropdownContainer,
-                    ref: function ref(_ref2) {
-                        return _this2.wrapper = _ref2;
-                    },
-                    onKeyDown: this.handleKeyDown,
-                    onFocus: this.handleFocus,
-                    onBlur: this.handleBlur,
-                    onMouseEnter: this.handleMouseEnter,
-                    onMouseLeave: this.handleMouseLeave
+            return _react2.default.createElement('div', {
+                className: 'dropdown',
+                tabIndex: '0',
+                role: 'combobox',
+                'aria-expanded': expanded,
+                'aria-readonly': 'true',
+                'aria-disabled': disabled,
+                style: styles.dropdownContainer,
+                ref: function ref(_ref2) {
+                    return _this2.wrapper = _ref2;
                 },
-                _react2.default.createElement(
-                    'div',
-                    {
-                        className: 'dropdown-heading',
-                        style: _extends({}, styles.dropdownHeader, expandedHeaderStyle, focusedHeaderStyle),
-                        onClick: function onClick() {
-                            return _this2.toggleExpanded();
-                        }
-                    },
-                    _react2.default.createElement(
-                        'span',
-                        {
-                            className: 'dropdown-heading-value',
-                            style: headingStyle
-                        },
-                        children
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        {
-                            className: 'dropdown-heading-loading-container',
-                            style: styles.loadingContainer
-                        },
-                        isLoading && _react2.default.createElement(_loadingIndicator2.default, null)
-                    ),
-                    _react2.default.createElement(
-                        'span',
-                        {
-                            className: 'dropdown-heading-dropdown-arrow',
-                            style: styles.dropdownArrow
-                        },
-                        _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle)
-                        })
-                    )
-                ),
-                expanded && this.renderPanel()
-            );
+                onKeyDown: this.handleKeyDown,
+                onFocus: this.handleFocus,
+                onBlur: this.handleBlur,
+                onMouseEnter: this.handleMouseEnter,
+                onMouseLeave: this.handleMouseLeave
+            }, _react2.default.createElement('div', {
+                className: 'dropdown-heading',
+                style: _extends({}, styles.dropdownHeader, expandedHeaderStyle, focusedHeaderStyle),
+                onClick: function onClick() {
+                    return _this2.toggleExpanded();
+                }
+            }, _react2.default.createElement('span', {
+                className: 'dropdown-heading-value',
+                style: headingStyle
+            }, children), _react2.default.createElement('span', {
+                className: 'dropdown-heading-loading-container',
+                style: styles.loadingContainer
+            }, isLoading && _react2.default.createElement(_loadingIndicator2.default, null)), _react2.default.createElement('span', {
+                className: 'dropdown-heading-dropdown-arrow',
+                style: styles.dropdownArrow
+            }, _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle)
+            }))), expanded && this.renderPanel());
         }
     }]);
 
     return Dropdown;
 }(_react.Component);
 
-var focusColor = '#78c008';
+var focusColor = '#4285f4';
 
 var styles = {
     dropdownArrow: {
@@ -295,17 +293,17 @@ var styles = {
     dropdownHeader: {
         boxSizing: 'border-box',
         backgroundColor: '#fff',
-        borderColor: '#d9d9d9 #ccc #b3b3b3',
+        borderColor: '#dfe1e5 #dfe1e5 #dfe1e5',
         borderRadius: 4,
         borderBottomRightRadius: 4,
         borderBottomLeftRadius: 4,
-        border: '1px solid #ccc',
+        border: '2px solid #dfe1e5',
         color: '#333',
         cursor: 'default',
         display: 'table',
         borderSpacing: 0,
         borderCollapse: 'separate',
-        height: 36,
+        height: 40,
         outline: 'none',
         overflow: 'hidden',
         position: 'relative',
@@ -329,16 +327,16 @@ var styles = {
         borderBottomRightRadius: '4px',
         borderBottomLeftRadius: '4px',
         backgroundColor: '#fff',
-        border: '1px solid #ccc',
+        border: '2px solid #ccc',
         borderTopColor: '#e6e6e6',
-        boxShadow: '0 1px 0 rgba(0, 0, 0, 0.06)',
+        boxShadow: 'none',
         boxSizing: 'border-box',
         marginTop: '-1px',
         maxHeight: '300px',
         position: 'absolute',
         top: '100%',
         width: '100%',
-        zIndex: 1,
+        zIndex: 100,
         overflowY: 'auto'
     }
 };
