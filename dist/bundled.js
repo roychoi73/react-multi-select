@@ -667,7 +667,7 @@ var styles = {
         maxHeight: '300px',
         position: 'absolute',
         top: '100%',
-        width: '100%',
+        minWidth: '100%',
         zIndex: 100,
         overflowY: 'auto'
     }
