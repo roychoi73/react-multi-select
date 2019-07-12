@@ -170,7 +170,8 @@ var MultiSelect = function (_Component) {
                             filterOptions: filterOptions,
                             overrideStrings: overrideStrings
                         },
-                        disabled: disabled
+                        disabled: disabled,
+                        arrowIcon: true
                     },
                     this.renderHeader()
                 )
@@ -189,7 +190,7 @@ MultiSelect.defaultProps = {
 
 var styles = {
     noneSelected: {
-        color: "#aaa"
+        color: "#999"
     }
 };
 

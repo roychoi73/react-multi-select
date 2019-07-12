@@ -51,7 +51,8 @@ type SelectItemProps = {
     focused?: boolean,
     disabled?: boolean,
     onSelectionChanged: (checked: boolean) => void,
-    onClick: (event: MouseEvent) => void
+    onClick: (event: MouseEvent) => void,
+    onHoverChanged: Function
 };
 type SelectItemState = {
     hovered: boolean
@@ -60,6 +61,7 @@ type SelectItemState = {
 class SelectItem extends Component<SelectItemProps, SelectItemState> {
     static defaultProps = {
         ItemRenderer: DefaultItemRenderer,
+        onHoverChanged: () => {},
     }
 
     state = {
@@ -98,22 +100,22 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
         const {focused} = this.props;
 
         if (focused && this.itemRef) {
-            this.itemRef.focus();
+            //this.itemRef.focus();
         }
     }
 
-    handleKeyDown = (e: KeyboardEvent) => {
-        switch (e.which) {
-            case 13: // Enter
-            case 32: // Space
-                this.toggleChecked();
-                break;
-            default:
-                return;
-        }
+    // handleKeyDown = (e: KeyboardEvent) => {
+    //     switch (e.which) {
+    //         case 13: // Enter
+    //         case 32: // Space
+    //             this.toggleChecked();
+    //             break;
+    //         default:
+    //             return;
+    //     }
 
-        e.preventDefault();
-    }
+    //     e.preventDefault();
+    // }
 
     render() {
         const {ItemRenderer, option, checked, focused, disabled} = this.props;
@@ -128,12 +130,11 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
             role="option"
             aria-selected={checked}
             selected={checked}
-            tabIndex="-1"
+            //tabIndex="-1"
             style={{...styles.itemContainer, ...focusStyle}}
             ref={ref => this.itemRef = ref}
-            onKeyDown={this.handleKeyDown}
-            onMouseOver={() => this.setState({hovered: true})}
-            onMouseOut={() => this.setState({hovered: false})}
+            onMouseEnter={() => this.updateHover(true)}
+            onMouseOut={() => this.updateHover(false)}
         >
             <ItemRenderer
                 option={option}
@@ -142,6 +143,13 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
                 disabled={disabled}
             />
         </label>;
+    }
+
+    updateHover = (hover) => {
+        //this.setState({hovered: hover});
+        if (hover) {
+            this.props.onHoverChanged();
+        }
     }
 }
 
@@ -156,7 +164,7 @@ const styles = {
         padding: '8px 10px',
     },
     itemContainerHover: {
-        backgroundColor: '#ebf5ff',
+        backgroundColor: 'rgba(134, 147, 201, 0.1)',
         outline: 0,
     },
     label: {

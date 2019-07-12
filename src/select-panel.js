@@ -33,11 +33,14 @@ type State = {
 };
 
 class SelectPanel extends Component<Props, State> {
+
     state = {
         searchHasFocus: false,
         searchText: "",
-        focusIndex: 0,
+        focusIndex: -1,
     }
+
+    inputRef = null;
 
     selectAll = () => {
         const {onSelectedChanged, options} = this.props;
@@ -75,8 +78,43 @@ class SelectPanel extends Component<Props, State> {
         this.setState({searchText: ""});
     }
 
+    toggleChecked = () => {
+        const {focusIndex} = this.state;
+        const {options, selected, disabled, onSelectedChanged} = this.props;
+
+        if (focusIndex === 0) {
+            if (selected.length === options.length) {
+                this.selectNone();
+            } else {
+                this.selectAll();
+            }
+            return;
+        }
+
+        if (disabled) {
+            return;
+        }
+
+        const option = options[focusIndex - 1];
+        const optionIndex = selected.indexOf(option.value);
+
+        if (optionIndex < 0) {
+            onSelectedChanged([...selected, option.value]);
+        } else {
+            const removed = [
+                ...selected.slice(0, optionIndex),
+                ...selected.slice(optionIndex + 1),
+            ];
+            onSelectedChanged(removed);
+        }
+    }
+
     handleKeyDown = (e: KeyboardEvent) => {
         switch (e.which) {
+            case 13: // Enter
+            case 32: // Space
+                this.toggleChecked();
+                break;
             case 38: // Up Arrow
                 if (e.altKey) {
                     return;
@@ -131,8 +169,30 @@ class SelectPanel extends Component<Props, State> {
         this.setState({focusIndex: newFocus});
     }
 
+    handleHoverChanged = (index) => {
+        this.updateFocus(index - this.state.focusIndex);
+    }
+
+    expandedChange = (expanded) => {
+        if (expanded) {
+            if (this.inputRef) {
+                this.inputRef.focus();
+            }
+        } else {
+            this.setState({
+                focusIndex: -1,
+            });
+        }
+    }
+
+    clearSearchText = () => {
+        this.setState({
+            searchText: '',
+        });
+    }
+
     render() {
-        const {focusIndex, searchHasFocus} = this.state;
+        const {focusIndex, searchText} = this.state;
         const {
             ItemRenderer,
             selectAllLabel,
@@ -147,10 +207,6 @@ class SelectPanel extends Component<Props, State> {
             value: "",
         };
 
-        const focusedSearchStyle = searchHasFocus
-            ? styles.searchFocused
-            : undefined;
-
         return <div
             className="select-panel"
             style={styles.panel}
@@ -159,13 +215,36 @@ class SelectPanel extends Component<Props, State> {
         >
             {!disableSearch && <div style={styles.searchContainer}>
                 <input
+                    autoFocus={true}
+                    ref={ref => {
+                        this.inputRef = ref;
+                    }}
+                    value={searchText}
+                    className="dropdown-search-input"
                     placeholder={getString("search", overrideStrings)}
                     type="text"
                     onChange={this.handleSearchChange}
-                    style={{...styles.search, ...focusedSearchStyle}}
-                    onFocus={() => this.handleSearchFocus(true)}
+                    style={{...styles.search}}
+                    //onFocus={() => this.handleSearchFocus(true)}
                     onBlur={() => this.handleSearchFocus(false)}
                 />
+                <div style={{...styles.searchIcon}}>
+                    {!!searchText ? (
+                        <svg onClick={this.clearSearchText} width="24" height="24" viewBox="0 0 24 24" style={{cursor: 'pointer'}}>
+                            <defs>
+                                <path id="multiselect-clear" d="M0 9a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9zm12.808 2.885a.653.653 0 1 1-.923.924L9 9.924l-2.885 2.885a.651.651 0 0 1-.924 0 .654.654 0 0 1 0-.924L8.076 9 5.19 6.115a.654.654 0 0 1 .924-.923L9 8.076l2.885-2.884a.653.653 0 1 1 .923.923L9.924 9l2.884 2.885z"/>
+                            </defs>
+                            <use fill="#6D7381" fillRule="nonzero" opacity=".4" transform="translate(3 3)" xlinkHref="#multiselect-clear"/>
+                        </svg>
+                    ) : (
+                        <svg width="20" height="20" viewBox="0 0 20 20" style={{marginTop: '4px'}}>
+                            <defs>
+                                <path id="multiselect-search" d="M13.436 12.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM7.5 13a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z"/>
+                            </defs>
+                            <use fill="#6D7381" fillRule="nonzero" transform="translate(1 1)" xlinkHref="#multiselect-search"/>
+                        </svg>
+                    )}
+                </div>
             </div>}
 
             {hasSelectAll &&
@@ -177,6 +256,9 @@ class SelectPanel extends Component<Props, State> {
                   onClick={() => this.handleItemClicked(0)}
                   ItemRenderer={ItemRenderer}
                   disabled={disabled}
+                  onHoverChanged={() => {
+                    this.handleHoverChanged(0);
+                  }}
               />
             }
 
@@ -187,6 +269,9 @@ class SelectPanel extends Component<Props, State> {
                 onClick={(e, index) => this.handleItemClicked(index + 1)}
                 ItemRenderer={ItemRenderer}
                 disabled={disabled}
+                onHoverChanged={(index) => {
+                    this.handleHoverChanged(index + 1);
+                }}
             />
         </div>;
     }
@@ -194,30 +279,40 @@ class SelectPanel extends Component<Props, State> {
 
 const styles = {
     panel: {
+        height: '100%',
         boxSizing : 'border-box',
+        transition: 'all 200ms',
     },
     search: {
         display: "block",
-
+        height: '32px',
         maxWidth: "100%",
-        borderRadius: "3px",
-
+        borderRadius: "4px",
+        backgroundColor: 'rgba(134, 147, 201, 0.1)',
         boxSizing : 'border-box',
-        height: '30px',
         lineHeight: '24px',
-        border: '1px solid',
+        border: 0,
         borderColor: '#dee2e4',
         padding: '10px',
         width: "100%",
         outline: "none",
+        fontSize: '14px',
     },
     searchFocused: {
         borderColor: "#4285f4",
     },
     searchContainer: {
+        position: 'relative',
         width: "100%",
         boxSizing : 'border-box',
         padding: "0.5em",
+    },
+    searchIcon: {
+        position: 'absolute',
+        width: '24px',
+        height: '24px',
+        top: '10px',
+        right: '10px',
     },
 };
 

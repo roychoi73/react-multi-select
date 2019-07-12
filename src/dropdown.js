@@ -30,7 +30,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 
-var Dropdown = function (_Component) {
+const Dropdown = function (_Component) {
     _inherits(Dropdown, _Component);
 
     function Dropdown() {
@@ -43,6 +43,24 @@ var Dropdown = function (_Component) {
         for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
             args[_key] = arguments[_key];
         }
+
+        this.expandedChanged = false;
+
+        this.shouldUpdateComponent = (nextProps, nextState) => {
+            if (!this.expandedChanged && nextState.expanded !== this.state.expanded) {
+                this.expandedChanged = true;
+            }
+            return true;
+        };
+
+        this.componentDidUpdate = () => {
+            setTimeout(() => {
+                if (this.selectPanel) {
+                    this.selectPanel.expandedChange(this.state.expanded);
+                    this.expandedChanged = false;
+                }
+            }, 100);
+        };
 
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Dropdown.__proto__ || Object.getPrototypeOf(Dropdown)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
             expanded: false,
@@ -110,13 +128,20 @@ var Dropdown = function (_Component) {
 
             _this.setState({ expanded: newExpanded });
 
+            if (newExpanded && _this.selectPanel) {
+                //_this.selectPanel.focusSearch();
+            }
+
             if (!newExpanded && _this.wrapper) {
-                _this.wrapper.focus();
+                //_this.wrapper.focus();
             }
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(Dropdown, [{
+        key: 'selectPanel',
+        value: null,
+    }, {
         key: 'componentWillUpdate',
         value: function componentWillUpdate() {
             document.addEventListener('touchstart', this.handleDocumentClick);
@@ -156,14 +181,20 @@ var Dropdown = function (_Component) {
             var _props2 = this.props,
                 children = _props2.children,
                 isLoading = _props2.isLoading,
-                disabled = _props2.disabled;
-
+                disabled = _props2.disabled,
+                arrowIcon = _props2.arrowIcon,
+                ContentComponent = _props2.contentComponent,
+                contentProps = _props2.contentProps;
 
             var expandedHeaderStyle = expanded ? styles.dropdownHeaderExpanded : undefined;
 
-            var focusedHeaderStyle = hasFocus ? styles.dropdownHeaderFocused : undefined;
+            var focusedHeaderStyle = expanded ? styles.dropdownHeaderFocused : undefined;
 
-            var arrowStyle = expanded ? styles.dropdownArrowUp : styles.dropdownArrowDown;
+            let arrowStyle = expanded ? styles.dropdownArrowUp : styles.dropdownArrowDown;
+            if (arrowIcon) {
+                arrowStyle = expanded ? styles.dropdownIconArrowUp : styles.dropdownIconArrowDown;
+            }
+            
 
             var focusedArrowStyle = hasFocus ? styles.dropdownArrowDownFocused : undefined;
 
@@ -192,7 +223,7 @@ var Dropdown = function (_Component) {
                     'div',
                     {
                         className: 'dropdown-heading',
-                        style: _extends({}, styles.dropdownHeader, expandedHeaderStyle, focusedHeaderStyle),
+                        style: _extends({}, styles.dropdownHeader, focusedHeaderStyle),
                         onClick: function onClick() {
                             return _this2.toggleExpanded();
                         }
@@ -219,11 +250,48 @@ var Dropdown = function (_Component) {
                             className: 'dropdown-heading-dropdown-arrow',
                             style: styles.dropdownArrow
                         },
-                        _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle)
-                        })
+                        //_react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle)
+                        arrowIcon ? _react2.default.createElement(
+                            'svg',
+                            {
+                                width:'24',
+                                height:'24',
+                                viewBox:'0 0 24 24',
+                                style: arrowStyle,
+                            },
+                            _react2.default.createElement(
+                                'g',
+                                {fill: 'none', 'fillRule': 'evenodd'},
+                                _react2.default.createElement(
+                                    'path',
+                                    {
+                                        d: 'M6 6h12v12H6z',
+                                        'fillRule': 'evenodd'
+                                    }
+                                ),
+                                _react2.default.createElement(
+                                    'path',
+                                    {
+                                        fill: '#6D7381',
+                                        'fillRule': 'nonzero',
+                                        d: 'M6.336 9.34a1.17 1.17 0 0 0-.01 1.63l.01.01 4.45 4.51a1.7 1.7 0 0 0 2.427 0l4.45-4.51a1.17 1.17 0 0 0 0-1.64 1.132 1.132 0 0 0-1.617 0L12 13.441l-4.047-4.1a1.132 1.132 0 0 0-1.617 0',
+                                    }
+                                )
+                            )
+                        ) : _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle)})
                     )
                 ),
-                expanded && this.renderPanel()
+                //expanded && this.renderPanel()
+                _react2.default.createElement(
+                    'div',
+                    {
+                        className: 'dropdown-content',
+                        style: _extends({}, styles.panelContainer, !expanded ? {maxHeight: 0, visibility: 'hidden'} : {}),
+                    },
+                    _react2.default.createElement(ContentComponent, _extends({}, contentProps, {ref: ref => {
+                        this.selectPanel = ref;
+                    }}))
+                )
             );
         }
     }]);
@@ -233,7 +301,7 @@ var Dropdown = function (_Component) {
 
 var focusColor = '#4285f4';
 
-var styles = {
+const styles = {
     dropdownArrow: {
         boxSizing: 'border-box',
         cursor: 'pointer',
@@ -243,6 +311,10 @@ var styles = {
         verticalAlign: 'middle',
         width: 25,
         paddingRight: 5
+    },
+    dropdownIconArrowDown: {
+        verticalAlign: 'middle',
+        transition: 'transform .1s',
     },
     dropdownArrowDown: {
         boxSizing: 'border-box',
@@ -268,6 +340,11 @@ var styles = {
         width: 0,
         position: 'relative'
     },
+    dropdownIconArrowUp: {
+        verticalAlign: 'middle',
+        transition: 'transform .1s',
+        transform: 'rotate(-180deg)',
+    },
     dropdownChildren: {
         boxSizing: 'border-box',
         bottom: 0,
@@ -275,7 +352,7 @@ var styles = {
         left: 0,
         lineHeight: '34px',
         paddingLeft: 10,
-        paddingRight: 10,
+        paddingRight: 30,
         position: 'absolute',
         right: 0,
         top: 0,
@@ -305,7 +382,7 @@ var styles = {
         display: 'table',
         borderSpacing: 0,
         borderCollapse: 'separate',
-        height: 40,
+        height: 36,
         outline: 'none',
         overflow: 'hidden',
         position: 'relative',
@@ -329,17 +406,19 @@ var styles = {
         borderBottomRightRadius: '4px',
         borderBottomLeftRadius: '4px',
         backgroundColor: '#fff',
-        border: '2px solid #ccc',
-        borderTopColor: '#e6e6e6',
-        boxShadow: 'none',
+        //border: '2px solid #ccc',
+        //borderTopColor: '#e6e6e6',
+        borderRadius: '3px',
+        boxShadow: '0 4px 14px -2px rgba(9, 30, 66, 0.3)',
         boxSizing: 'border-box',
-        marginTop: '-1px',
+        marginTop: '10px',
         maxHeight: '300px',
         position: 'absolute',
         top: '100%',
         minWidth: '100%',
         zIndex: 100,
-        overflowY: 'auto'
+        overflowY: 'auto',
+        transition: 'all .1s ease-in',
     }
 };
 

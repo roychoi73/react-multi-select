@@ -102,18 +102,11 @@ var SelectItem = function (_Component2) {
 
             _this2.toggleChecked();
             onClick(e);
-        }, _this2.handleKeyDown = function (e) {
-            switch (e.which) {
-                case 13: // Enter
-                case 32:
-                    // Space
-                    _this2.toggleChecked();
-                    break;
-                default:
-                    return;
+        }, _this2.updateHover = function (hover) {
+            //this.setState({hovered: hover});
+            if (hover) {
+                _this2.props.onHoverChanged();
             }
-
-            e.preventDefault();
         }, _temp), _possibleConstructorReturn(_this2, _ret);
     }
 
@@ -134,9 +127,23 @@ var SelectItem = function (_Component2) {
 
 
             if (focused && this.itemRef) {
-                this.itemRef.focus();
+                //this.itemRef.focus();
             }
         }
+
+        // handleKeyDown = (e: KeyboardEvent) => {
+        //     switch (e.which) {
+        //         case 13: // Enter
+        //         case 32: // Space
+        //             this.toggleChecked();
+        //             break;
+        //         default:
+        //             return;
+        //     }
+
+        //     e.preventDefault();
+        // }
+
     }, {
         key: "render",
         value: function render() {
@@ -159,18 +166,17 @@ var SelectItem = function (_Component2) {
                     className: "select-item",
                     role: "option",
                     "aria-selected": checked,
-                    selected: checked,
-                    tabIndex: "-1",
-                    style: _extends({}, styles.itemContainer, focusStyle),
+                    selected: checked
+                    //tabIndex="-1"
+                    , style: _extends({}, styles.itemContainer, focusStyle),
                     ref: function ref(_ref2) {
                         return _this3.itemRef = _ref2;
                     },
-                    onKeyDown: this.handleKeyDown,
-                    onMouseOver: function onMouseOver() {
-                        return _this3.setState({ hovered: true });
+                    onMouseEnter: function onMouseEnter() {
+                        return _this3.updateHover(true);
                     },
                     onMouseOut: function onMouseOut() {
-                        return _this3.setState({ hovered: false });
+                        return _this3.updateHover(false);
                     }
                 },
                 _react2.default.createElement(ItemRenderer, {
@@ -187,7 +193,8 @@ var SelectItem = function (_Component2) {
 }(_react.Component);
 
 SelectItem.defaultProps = {
-    ItemRenderer: DefaultItemRenderer
+    ItemRenderer: DefaultItemRenderer,
+    onHoverChanged: function onHoverChanged() {}
 };
 
 
@@ -201,7 +208,7 @@ var styles = {
         padding: '8px 10px'
     },
     itemContainerHover: {
-        backgroundColor: '#ebf5ff',
+        backgroundColor: 'rgba(134, 147, 201, 0.1)',
         outline: 0
     },
     label: {

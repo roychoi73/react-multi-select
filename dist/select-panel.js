@@ -28,6 +28,8 @@ var _getString2 = _interopRequireDefault(_getString);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -57,8 +59,8 @@ var SelectPanel = function (_Component) {
         return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = SelectPanel.__proto__ || Object.getPrototypeOf(SelectPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
             searchHasFocus: false,
             searchText: "",
-            focusIndex: 0
-        }, _this.selectAll = function () {
+            focusIndex: -1
+        }, _this.inputRef = null, _this.selectAll = function () {
             var _this$props = _this.props,
                 onSelectedChanged = _this$props.onSelectedChanged,
                 options = _this$props.options;
@@ -88,8 +90,44 @@ var SelectPanel = function (_Component) {
             _this.setState({ focusIndex: index });
         }, _this.clearSearch = function () {
             _this.setState({ searchText: "" });
+        }, _this.toggleChecked = function () {
+            var focusIndex = _this.state.focusIndex;
+            var _this$props2 = _this.props,
+                options = _this$props2.options,
+                selected = _this$props2.selected,
+                disabled = _this$props2.disabled,
+                onSelectedChanged = _this$props2.onSelectedChanged;
+
+
+            if (focusIndex === 0) {
+                if (selected.length === options.length) {
+                    _this.selectNone();
+                } else {
+                    _this.selectAll();
+                }
+                return;
+            }
+
+            if (disabled) {
+                return;
+            }
+
+            var option = options[focusIndex - 1];
+            var optionIndex = selected.indexOf(option.value);
+
+            if (optionIndex < 0) {
+                onSelectedChanged([].concat(_toConsumableArray(selected), [option.value]));
+            } else {
+                var removed = [].concat(_toConsumableArray(selected.slice(0, optionIndex)), _toConsumableArray(selected.slice(optionIndex + 1)));
+                onSelectedChanged(removed);
+            }
         }, _this.handleKeyDown = function (e) {
             switch (e.which) {
+                case 13: // Enter
+                case 32:
+                    // Space
+                    _this.toggleChecked();
+                    break;
                 case 38:
                     // Up Arrow
                     if (e.altKey) {
@@ -116,6 +154,22 @@ var SelectPanel = function (_Component) {
             _this.setState({
                 searchHasFocus: searchHasFocus,
                 focusIndex: -1
+            });
+        }, _this.handleHoverChanged = function (index) {
+            _this.updateFocus(index - _this.state.focusIndex);
+        }, _this.expandedChange = function (expanded) {
+            if (expanded) {
+                if (_this.inputRef) {
+                    _this.inputRef.focus();
+                }
+            } else {
+                _this.setState({
+                    focusIndex: -1
+                });
+            }
+        }, _this.clearSearchText = function () {
+            _this.setState({
+                searchText: ''
             });
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
@@ -160,7 +214,7 @@ var SelectPanel = function (_Component) {
 
             var _state = this.state,
                 focusIndex = _state.focusIndex,
-                searchHasFocus = _state.searchHasFocus;
+                searchText = _state.searchText;
             var _props3 = this.props,
                 ItemRenderer = _props3.ItemRenderer,
                 selectAllLabel = _props3.selectAllLabel,
@@ -175,8 +229,6 @@ var SelectPanel = function (_Component) {
                 value: ""
             };
 
-            var focusedSearchStyle = searchHasFocus ? styles.searchFocused : undefined;
-
             return _react2.default.createElement(
                 'div',
                 {
@@ -189,17 +241,44 @@ var SelectPanel = function (_Component) {
                     'div',
                     { style: styles.searchContainer },
                     _react2.default.createElement('input', {
+                        autoFocus: true,
+                        ref: function ref(_ref2) {
+                            _this2.inputRef = _ref2;
+                        },
+                        value: searchText,
+                        className: 'dropdown-search-input',
                         placeholder: (0, _getString2.default)("search", overrideStrings),
                         type: 'text',
                         onChange: this.handleSearchChange,
-                        style: _extends({}, styles.search, focusedSearchStyle),
-                        onFocus: function onFocus() {
-                            return _this2.handleSearchFocus(true);
-                        },
-                        onBlur: function onBlur() {
+                        style: _extends({}, styles.search)
+                        //onFocus={() => this.handleSearchFocus(true)}
+                        , onBlur: function onBlur() {
                             return _this2.handleSearchFocus(false);
                         }
-                    })
+                    }),
+                    _react2.default.createElement(
+                        'div',
+                        { style: _extends({}, styles.searchIcon) },
+                        !!searchText ? _react2.default.createElement(
+                            'svg',
+                            { onClick: this.clearSearchText, width: '24', height: '24', viewBox: '0 0 24 24', style: { cursor: 'pointer' } },
+                            _react2.default.createElement(
+                                'defs',
+                                null,
+                                _react2.default.createElement('path', { id: 'multiselect-clear', d: 'M0 9a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9zm12.808 2.885a.653.653 0 1 1-.923.924L9 9.924l-2.885 2.885a.651.651 0 0 1-.924 0 .654.654 0 0 1 0-.924L8.076 9 5.19 6.115a.654.654 0 0 1 .924-.923L9 8.076l2.885-2.884a.653.653 0 1 1 .923.923L9.924 9l2.884 2.885z' })
+                            ),
+                            _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', opacity: '.4', transform: 'translate(3 3)', xlinkHref: '#multiselect-clear' })
+                        ) : _react2.default.createElement(
+                            'svg',
+                            { width: '20', height: '20', viewBox: '0 0 20 20', style: { marginTop: '4px' } },
+                            _react2.default.createElement(
+                                'defs',
+                                null,
+                                _react2.default.createElement('path', { id: 'multiselect-search', d: 'M13.436 12.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM7.5 13a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z' })
+                            ),
+                            _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', transform: 'translate(1 1)', xlinkHref: '#multiselect-search' })
+                        )
+                    )
                 ),
                 hasSelectAll && _react2.default.createElement(_selectItem2.default, {
                     focused: focusIndex === 0,
@@ -210,7 +289,10 @@ var SelectPanel = function (_Component) {
                         return _this2.handleItemClicked(0);
                     },
                     ItemRenderer: ItemRenderer,
-                    disabled: disabled
+                    disabled: disabled,
+                    onHoverChanged: function onHoverChanged() {
+                        _this2.handleHoverChanged(0);
+                    }
                 }),
                 _react2.default.createElement(_selectList2.default, _extends({}, this.props, {
                     options: this.filteredOptions(),
@@ -219,7 +301,10 @@ var SelectPanel = function (_Component) {
                         return _this2.handleItemClicked(index + 1);
                     },
                     ItemRenderer: ItemRenderer,
-                    disabled: disabled
+                    disabled: disabled,
+                    onHoverChanged: function onHoverChanged(index) {
+                        _this2.handleHoverChanged(index + 1);
+                    }
                 }))
             );
         }
@@ -230,30 +315,40 @@ var SelectPanel = function (_Component) {
 
 var styles = {
     panel: {
-        boxSizing: 'border-box'
+        height: '100%',
+        boxSizing: 'border-box',
+        transition: 'all 200ms'
     },
     search: {
         display: "block",
-
+        height: '32px',
         maxWidth: "100%",
-        borderRadius: "3px",
-
+        borderRadius: "4px",
+        backgroundColor: 'rgba(134, 147, 201, 0.1)',
         boxSizing: 'border-box',
-        height: '30px',
         lineHeight: '24px',
-        border: '1px solid',
+        border: 0,
         borderColor: '#dee2e4',
         padding: '10px',
         width: "100%",
-        outline: "none"
+        outline: "none",
+        fontSize: '14px'
     },
     searchFocused: {
         borderColor: "#4285f4"
     },
     searchContainer: {
+        position: 'relative',
         width: "100%",
         boxSizing: 'border-box',
         padding: "0.5em"
+    },
+    searchIcon: {
+        position: 'absolute',
+        width: '24px',
+        height: '24px',
+        top: '10px',
+        right: '10px'
     }
 };
 

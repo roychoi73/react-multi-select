@@ -134,6 +134,7 @@ class MultiSelect extends Component<Props> {
                     overrideStrings,
                 }}
                 disabled={disabled}
+                arrowIcon
             >
                 {this.renderHeader()}
             </Dropdown>
@@ -143,7 +144,7 @@ class MultiSelect extends Component<Props> {
 
 const styles = {
     noneSelected: {
-        color: "#aaa",
+        color: "#999",
     },
 };
 

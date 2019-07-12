@@ -50,7 +50,7 @@ var SelectList = function (_Component) {
 
 
             if (disabled) {
-                true;
+                return;
             }
 
             if (checked) {
@@ -74,7 +74,8 @@ var SelectList = function (_Component) {
                 selected = _props.selected,
                 focusIndex = _props.focusIndex,
                 onClick = _props.onClick,
-                disabled = _props.disabled;
+                disabled = _props.disabled,
+                onHoverChanged = _props.onHoverChanged;
 
 
             return options.map(function (o, i) {
@@ -105,7 +106,20 @@ var SelectList = function (_Component) {
                             return onClick(e, i);
                         }),
                         ItemRenderer: ItemRenderer,
-                        disabled: disabled
+                        disabled: disabled,
+                        onHoverChanged: function (_onHoverChanged) {
+                            function onHoverChanged() {
+                                return _onHoverChanged.apply(this, arguments);
+                            }
+
+                            onHoverChanged.toString = function () {
+                                return _onHoverChanged.toString();
+                            };
+
+                            return onHoverChanged;
+                        }(function () {
+                            return onHoverChanged(i);
+                        })
                     })
                 );
             });

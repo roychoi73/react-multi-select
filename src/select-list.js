@@ -17,7 +17,8 @@ type Props = {
     selected: Array<Object>,
     onSelectedChanged: (selected: any) => void,
     onClick: (event: MouseEvent, index: number) => void,
-    disabled?: boolean
+    disabled?: boolean,
+    onHoverChanged?: Function
 };
 
 class SelectList extends Component<Props> {
@@ -25,7 +26,7 @@ class SelectList extends Component<Props> {
         const {selected, onSelectedChanged, disabled} = this.props;
 
         if (disabled) {
-            true;
+            return;
         }
 
         if (checked) {
@@ -48,6 +49,7 @@ class SelectList extends Component<Props> {
             focusIndex,
             onClick,
             disabled,
+            onHoverChanged,
         } = this.props;
 
         return options.map((o, i) =>
@@ -63,6 +65,7 @@ class SelectList extends Component<Props> {
                     onClick={e => onClick(e, i)}
                     ItemRenderer={ItemRenderer}
                     disabled={disabled}
+                    onHoverChanged={() => onHoverChanged(i)}
                 />
             </li>
         );
