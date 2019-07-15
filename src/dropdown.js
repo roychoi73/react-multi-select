@@ -119,8 +119,9 @@ const Dropdown = function (_Component) {
             var isLoading = _this.props.isLoading;
             var expanded = _this.state.expanded;
 
+            const {disabled} = this.props;
 
-            if (isLoading) {
+            if (isLoading || disabled) {
                 return;
             }
 
@@ -194,7 +195,9 @@ const Dropdown = function (_Component) {
             if (arrowIcon) {
                 arrowStyle = expanded ? styles.dropdownIconArrowUp : styles.dropdownIconArrowDown;
             }
-            
+            if (disabled) {
+                arrowStyle = _extends({}, arrowStyle, styles.dropdownArrowDisabled);
+            }
 
             var focusedArrowStyle = hasFocus ? styles.dropdownArrowDownFocused : undefined;
 
@@ -226,7 +229,7 @@ const Dropdown = function (_Component) {
                         style: _extends({}, styles.dropdownHeader, focusedHeaderStyle),
                         onClick: function onClick() {
                             return _this2.toggleExpanded();
-                        }
+                        },
                     },
                     _react2.default.createElement(
                         'span',
@@ -286,7 +289,7 @@ const Dropdown = function (_Component) {
                     'div',
                     {
                         className: 'dropdown-content',
-                        style: _extends({}, styles.panelContainer, !expanded ? {maxHeight: 0, visibility: 'hidden'} : {}),
+                        style: _extends({}, styles.panelContainer, !expanded ? styles.panelContainerCollapsed : {}),
                     },
                     _react2.default.createElement(ContentComponent, _extends({}, contentProps, {ref: ref => {
                         this.selectPanel = ref;
@@ -304,7 +307,6 @@ var focusColor = '#4285f4';
 const styles = {
     dropdownArrow: {
         boxSizing: 'border-box',
-        cursor: 'pointer',
         display: 'table-cell',
         position: 'relative',
         textAlign: 'center',
@@ -314,7 +316,7 @@ const styles = {
     },
     dropdownIconArrowDown: {
         verticalAlign: 'middle',
-        transition: 'transform .1s',
+        transition: 'transform .25s',
     },
     dropdownArrowDown: {
         boxSizing: 'border-box',
@@ -342,8 +344,11 @@ const styles = {
     },
     dropdownIconArrowUp: {
         verticalAlign: 'middle',
-        transition: 'transform .1s',
+        transition: 'transform .25s',
         transform: 'rotate(-180deg)',
+    },
+    dropdownArrowDisabled: {
+        opacity: .5,
     },
     dropdownChildren: {
         boxSizing: 'border-box',
@@ -362,7 +367,8 @@ const styles = {
         whiteSpace: 'nowrap'
     },
     disabledDropdownChildren: {
-        opacity: 0.5
+        backgroundColor: 'rgba(109, 115, 129, 0.1)',
+        cursor: 'default',
     },
     dropdownContainer: {
         position: 'relative',
@@ -386,7 +392,8 @@ const styles = {
         outline: 'none',
         overflow: 'hidden',
         position: 'relative',
-        width: '100%'
+        width: '100%',
+        cursor: 'pointer'
     },
     dropdownHeaderFocused: {
         borderColor: focusColor,
@@ -411,15 +418,24 @@ const styles = {
         borderRadius: '3px',
         boxShadow: '0 4px 14px -2px rgba(9, 30, 66, 0.3)',
         boxSizing: 'border-box',
-        marginTop: '10px',
+        //marginTop: '10px',
         maxHeight: '300px',
+        opacity: 1,
         position: 'absolute',
         top: '100%',
         minWidth: '100%',
         zIndex: 100,
         overflowY: 'auto',
-        transition: 'all .1s ease-in',
-    }
+        transition: 'all .25s',
+        transform: 'translate3d(0, 0, 0)', // 'scale(1)',
+    },
+    panelContainerCollapsed: {
+        maxHeight: 0,
+        top: '100%',
+        visibility: 'hidden',
+        opacity: 0,
+        transform: 'scale(.9)',
+    },
 };
 
 exports.default = Dropdown;

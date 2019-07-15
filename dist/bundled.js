@@ -341,6 +341,8 @@ exports.default = SelectItem;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -488,7 +490,10 @@ var Dropdown = function (_Component) {
             var isLoading = _this.props.isLoading;
             var expanded = _this.state.expanded;
 
-            if (isLoading) {
+            var disabled = this.props.disabled;
+
+
+            if (isLoading || disabled) {
                 return;
             }
 
@@ -559,6 +564,9 @@ var Dropdown = function (_Component) {
             if (arrowIcon) {
                 arrowStyle = expanded ? styles.dropdownIconArrowUp : styles.dropdownIconArrowDown;
             }
+            if (disabled) {
+                arrowStyle = _extends({}, arrowStyle, styles.dropdownArrowDisabled);
+            }
 
             var focusedArrowStyle = hasFocus ? styles.dropdownArrowDownFocused : undefined;
 
@@ -613,7 +621,7 @@ var Dropdown = function (_Component) {
             //expanded && this.renderPanel()
             _react2.default.createElement('div', {
                 className: 'dropdown-content',
-                style: _extends({}, styles.panelContainer, !expanded ? { maxHeight: 0, visibility: 'hidden' } : {})
+                style: _extends({}, styles.panelContainer, !expanded ? styles.panelContainerCollapsed : {})
             }, _react2.default.createElement(ContentComponent, _extends({}, contentProps, { ref: function ref(_ref3) {
                     _this4.selectPanel = _ref3;
                 } }))));
@@ -628,7 +636,6 @@ var focusColor = '#4285f4';
 var styles = {
     dropdownArrow: {
         boxSizing: 'border-box',
-        cursor: 'pointer',
         display: 'table-cell',
         position: 'relative',
         textAlign: 'center',
@@ -638,7 +645,7 @@ var styles = {
     },
     dropdownIconArrowDown: {
         verticalAlign: 'middle',
-        transition: 'transform .1s'
+        transition: 'transform .25s'
     },
     dropdownArrowDown: {
         boxSizing: 'border-box',
@@ -666,8 +673,11 @@ var styles = {
     },
     dropdownIconArrowUp: {
         verticalAlign: 'middle',
-        transition: 'transform .1s',
+        transition: 'transform .25s',
         transform: 'rotate(-180deg)'
+    },
+    dropdownArrowDisabled: {
+        opacity: .5
     },
     dropdownChildren: {
         boxSizing: 'border-box',
@@ -686,14 +696,15 @@ var styles = {
         whiteSpace: 'nowrap'
     },
     disabledDropdownChildren: {
-        opacity: 0.5
+        backgroundColor: 'rgba(109, 115, 129, 0.1)',
+        cursor: 'default'
     },
     dropdownContainer: {
         position: 'relative',
         boxSizing: 'border-box',
         outline: 'none'
     },
-    dropdownHeader: {
+    dropdownHeader: _defineProperty({
         boxSizing: 'border-box',
         backgroundColor: '#fff',
         borderColor: '#dfe1e5 #dfe1e5 #dfe1e5',
@@ -711,7 +722,7 @@ var styles = {
         overflow: 'hidden',
         position: 'relative',
         width: '100%'
-    },
+    }, "cursor", 'pointer'),
     dropdownHeaderFocused: {
         borderColor: focusColor,
         boxShadow: 'none'
@@ -735,14 +746,22 @@ var styles = {
         borderRadius: '3px',
         boxShadow: '0 4px 14px -2px rgba(9, 30, 66, 0.3)',
         boxSizing: 'border-box',
-        marginTop: '10px',
+        //marginTop: '10px',
         maxHeight: '300px',
+        opacity: 1,
         position: 'absolute',
         top: '100%',
         minWidth: '100%',
         zIndex: 100,
         overflowY: 'auto',
-        transition: 'all .1s ease-in'
+        transition: 'all .25s',
+        transform: 'translate3d(0, 0, 0)' // 'scale(1)',
+    },
+    panelContainerCollapsed: {
+        maxHeight: 0,
+        visibility: 'hidden',
+        opacity: 0,
+        transform: 'scale(.9)'
     }
 };
 
