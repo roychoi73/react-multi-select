@@ -351,6 +351,7 @@ const styles = {
         opacity: .5,
     },
     dropdownChildren: {
+        display: 'flex',
         boxSizing: 'border-box',
         bottom: 0,
         color: '#333',
@@ -364,7 +365,8 @@ const styles = {
         maxWidth: '100%',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        alignItems: 'center',
     },
     disabledDropdownChildren: {
         backgroundColor: 'rgba(109, 115, 129, 0.1)',
