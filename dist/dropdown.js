@@ -2,8 +2,6 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -365,7 +363,7 @@ var styles = {
         boxSizing: 'border-box',
         outline: 'none'
     },
-    dropdownHeader: _defineProperty({
+    dropdownHeader: {
         boxSizing: 'border-box',
         backgroundColor: '#fff',
         borderColor: '#dfe1e5 #dfe1e5 #dfe1e5',
@@ -374,7 +372,7 @@ var styles = {
         borderBottomLeftRadius: 4,
         border: '2px solid #dfe1e5',
         color: '#333',
-        cursor: 'default',
+        cursor: 'pointer',
         display: 'table',
         borderSpacing: 0,
         borderCollapse: 'separate',
@@ -383,7 +381,7 @@ var styles = {
         overflow: 'hidden',
         position: 'relative',
         width: '100%'
-    }, "cursor", 'pointer'),
+    },
     dropdownHeaderFocused: {
         borderColor: focusColor,
         boxShadow: 'none'

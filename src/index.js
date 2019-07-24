@@ -66,22 +66,28 @@ class MultiSelect extends Component<Props> {
             overrideStrings,
         } = this.props;
 
+        const style = {
+            display: 'inline-block',
+            height: '40px',
+            lineHeight: '40px',
+        };
+
         const noneSelected = selected.length === 0;
         const allSelected = selected.length === options.length;
 
         const customText = valueRenderer && valueRenderer(selected, options);
 
         if (noneSelected) {
-            return <span style={styles.noneSelected}>
+            return <span style={Object.assign({}, styles.noneSelected, style)}>
                 {customText || getString("selectSomeItems", overrideStrings)}
             </span>;
         }
 
         if (customText) {
-            return <span>{customText}</span>;
+            return <span style={style}>{customText}</span>;
         }
 
-        return <span>
+        return <span style={style}>
             {allSelected
                 ? getString("allItemsAreSelected", overrideStrings)
                 : this.getSelectedText()

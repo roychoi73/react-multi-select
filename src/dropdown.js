@@ -312,7 +312,7 @@ const styles = {
         textAlign: 'center',
         verticalAlign: 'middle',
         width: 25,
-        paddingRight: 5
+        paddingRight: 5,
     },
     dropdownIconArrowDown: {
         verticalAlign: 'middle',
@@ -326,10 +326,10 @@ const styles = {
         display: 'inline-block',
         height: 0,
         width: 0,
-        position: 'relative'
+        position: 'relative',
     },
     dropdownArrowDownFocused: {
-        borderColor: focusColor + ' transparent transparent'
+        borderColor: focusColor + ' transparent transparent',
     },
     dropdownArrowUp: {
         boxSizing: 'border-box',
@@ -373,7 +373,7 @@ const styles = {
     dropdownContainer: {
         position: 'relative',
         boxSizing: 'border-box',
-        outline: 'none'
+        outline: 'none',
     },
     dropdownHeader: {
         boxSizing: 'border-box',
@@ -384,7 +384,7 @@ const styles = {
         borderBottomLeftRadius: 4,
         border: '2px solid #dfe1e5',
         color: '#333',
-        cursor: 'default',
+        cursor: 'pointer',
         display: 'table',
         borderSpacing: 0,
         borderCollapse: 'separate',
@@ -393,11 +393,10 @@ const styles = {
         overflow: 'hidden',
         position: 'relative',
         width: '100%',
-        cursor: 'pointer'
     },
     dropdownHeaderFocused: {
         borderColor: focusColor,
-        boxShadow: 'none'
+        boxShadow: 'none',
     },
     dropdownHeaderExpanded: {
         borderBottomRightRadius: '0px',

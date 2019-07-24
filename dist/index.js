@@ -105,6 +105,12 @@ var MultiSelect = function (_Component) {
                 overrideStrings = _props2.overrideStrings;
 
 
+            var style = {
+                display: 'inline-block',
+                height: '40px',
+                lineHeight: '40px'
+            };
+
             var noneSelected = selected.length === 0;
             var allSelected = selected.length === options.length;
 
@@ -113,7 +119,7 @@ var MultiSelect = function (_Component) {
             if (noneSelected) {
                 return _react2.default.createElement(
                     'span',
-                    { style: styles.noneSelected },
+                    { style: Object.assign({}, styles.noneSelected, style) },
                     customText || (0, _getString2.default)("selectSomeItems", overrideStrings)
                 );
             }
@@ -121,14 +127,14 @@ var MultiSelect = function (_Component) {
             if (customText) {
                 return _react2.default.createElement(
                     'span',
-                    null,
+                    { style: style },
                     customText
                 );
             }
 
             return _react2.default.createElement(
                 'span',
-                null,
+                { style: style },
                 allSelected ? (0, _getString2.default)("allItemsAreSelected", overrideStrings) : this.getSelectedText()
             );
         }
