@@ -42,6 +42,8 @@ class SelectPanel extends Component<Props, State> {
 
     inputRef = null;
 
+    expanded = false;
+
     selectAll = () => {
         const {onSelectedChanged, options} = this.props;
         const allValues = options.map(o => o.value);
@@ -166,7 +168,23 @@ class SelectPanel extends Component<Props, State> {
         newFocus = Math.max(0, newFocus);
         newFocus = Math.min(newFocus, options.length);
 
-        this.setState({focusIndex: newFocus});
+        this.setState({focusIndex: newFocus}, () => {
+            try {
+                const container = this.panelRef.parentElement;
+                const scrollTop = container.scrollTop;
+                const { height } = container.getBoundingClientRect();
+                const focusItemTop = 48 + 39 + newFocus * 39;
+                if (newFocus === 0) {
+                    container.scrollTo(0, 0);
+                } else if (offset > 0 && height + scrollTop < focusItemTop) {
+                    container.scrollBy(0, 39);
+                } else if (offset < 0 && scrollTop > focusItemTop) {
+                    container.scrollBy(0, -39);
+                }
+            } catch(e) {
+                // 
+            }
+        });
     }
 
     handleHoverChanged = (index) => {
@@ -174,11 +192,13 @@ class SelectPanel extends Component<Props, State> {
     }
 
     expandedChange = (expanded) => {
-        if (expanded) {
+        if (!this.expanded && expanded) {
+            this.expanded = expanded;
             if (this.inputRef) {
                 this.inputRef.focus();
             }
-        } else {
+        } else if (!expanded) {
+            this.expanded = expanded;
             this.setState({
                 focusIndex: -1,
             });
@@ -212,6 +232,7 @@ class SelectPanel extends Component<Props, State> {
             style={styles.panel}
             role="listbox"
             onKeyDown={this.handleKeyDown}
+            ref={ref => this.panelRef = ref}
         >
             {!disableSearch && <div style={styles.searchContainer}>
                 <input
