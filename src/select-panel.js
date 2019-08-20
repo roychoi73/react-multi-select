@@ -173,13 +173,13 @@ class SelectPanel extends Component<Props, State> {
                 const container = this.panelRef.parentElement;
                 const scrollTop = container.scrollTop;
                 const { height } = container.getBoundingClientRect();
-                const focusItemTop = 48 + 39 + newFocus * 39;
+                const focusItemTop = 46 + 36 + newFocus * 36;
                 if (newFocus === 0) {
                     container.scrollTo(0, 0);
                 } else if (offset > 0 && height + scrollTop < focusItemTop) {
-                    container.scrollBy(0, 39);
+                    container.scrollBy(0, 36);
                 } else if (offset < 0 && scrollTop > focusItemTop) {
-                    container.scrollBy(0, -39);
+                    container.scrollBy(0, -36);
                 }
             } catch(e) {
                 // 

@@ -217,13 +217,13 @@ var SelectPanel = function (_Component) {
                     var _container$getBoundin = container.getBoundingClientRect(),
                         height = _container$getBoundin.height;
 
-                    var focusItemTop = 48 + 39 + newFocus * 39;
+                    var focusItemTop = 46 + 36 + newFocus * 36;
                     if (newFocus === 0) {
                         container.scrollTo(0, 0);
                     } else if (offset > 0 && height + scrollTop < focusItemTop) {
-                        container.scrollBy(0, 39);
+                        container.scrollBy(0, 36);
                     } else if (offset < 0 && scrollTop > focusItemTop) {
-                        container.scrollBy(0, -39);
+                        container.scrollBy(0, -36);
                     }
                 } catch (e) {
                     // 
