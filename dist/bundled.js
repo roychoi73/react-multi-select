@@ -835,7 +835,7 @@ var SelectPanel = function (_Component) {
             searchHasFocus: false,
             searchText: "",
             focusIndex: -1
-        }, _this.inputRef = null, _this.selectAll = function () {
+        }, _this.inputRef = null, _this.expanded = false, _this.selectAll = function () {
             var _this$props = _this.props,
                 onSelectedChanged = _this$props.onSelectedChanged,
                 options = _this$props.options;
@@ -933,11 +933,13 @@ var SelectPanel = function (_Component) {
         }, _this.handleHoverChanged = function (index) {
             _this.updateFocus(index - _this.state.focusIndex);
         }, _this.expandedChange = function (expanded) {
-            if (expanded) {
+            if (!_this.expanded && expanded) {
+                _this.expanded = expanded;
                 if (_this.inputRef) {
                     _this.inputRef.focus();
                 }
-            } else {
+            } else if (!expanded) {
+                _this.expanded = expanded;
                 _this.setState({
                     focusIndex: -1
                 });
@@ -972,6 +974,8 @@ var SelectPanel = function (_Component) {
     }, {
         key: 'updateFocus',
         value: function updateFocus(offset) {
+            var _this2 = this;
+
             var focusIndex = this.state.focusIndex;
             var options = this.props.options;
 
@@ -980,12 +984,31 @@ var SelectPanel = function (_Component) {
             newFocus = Math.max(0, newFocus);
             newFocus = Math.min(newFocus, options.length);
 
-            this.setState({ focusIndex: newFocus });
+            this.setState({ focusIndex: newFocus }, function () {
+                try {
+                    var container = _this2.panelRef.parentElement;
+                    var scrollTop = container.scrollTop;
+
+                    var _container$getBoundin = container.getBoundingClientRect(),
+                        height = _container$getBoundin.height;
+
+                    var focusItemTop = 48 + 39 + newFocus * 39;
+                    if (newFocus === 0) {
+                        container.scrollTo(0, 0);
+                    } else if (offset > 0 && height + scrollTop < focusItemTop) {
+                        container.scrollBy(0, 39);
+                    } else if (offset < 0 && scrollTop > focusItemTop) {
+                        container.scrollBy(0, -39);
+                    }
+                } catch (e) {
+                    // 
+                }
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this3 = this;
 
             var _state = this.state,
                 focusIndex = _state.focusIndex,
@@ -1010,7 +1033,10 @@ var SelectPanel = function (_Component) {
                     className: 'select-panel',
                     style: styles.panel,
                     role: 'listbox',
-                    onKeyDown: this.handleKeyDown
+                    onKeyDown: this.handleKeyDown,
+                    ref: function ref(_ref3) {
+                        return _this3.panelRef = _ref3;
+                    }
                 },
                 !disableSearch && _react2.default.createElement(
                     'div',
@@ -1018,7 +1044,7 @@ var SelectPanel = function (_Component) {
                     _react2.default.createElement('input', {
                         autoFocus: true,
                         ref: function ref(_ref2) {
-                            _this2.inputRef = _ref2;
+                            _this3.inputRef = _ref2;
                         },
                         value: searchText,
                         className: 'dropdown-search-input',
@@ -1028,7 +1054,7 @@ var SelectPanel = function (_Component) {
                         style: _extends({}, styles.search)
                         //onFocus={() => this.handleSearchFocus(true)}
                         , onBlur: function onBlur() {
-                            return _this2.handleSearchFocus(false);
+                            return _this3.handleSearchFocus(false);
                         }
                     }),
                     _react2.default.createElement(
@@ -1061,24 +1087,24 @@ var SelectPanel = function (_Component) {
                     option: selectAllOption,
                     onSelectionChanged: this.selectAllChanged,
                     onClick: function onClick() {
-                        return _this2.handleItemClicked(0);
+                        return _this3.handleItemClicked(0);
                     },
                     ItemRenderer: ItemRenderer,
                     disabled: disabled,
                     onHoverChanged: function onHoverChanged() {
-                        _this2.handleHoverChanged(0);
+                        _this3.handleHoverChanged(0);
                     }
                 }),
                 _react2.default.createElement(_selectList2.default, _extends({}, this.props, {
                     options: this.filteredOptions(),
                     focusIndex: focusIndex - 1,
                     onClick: function onClick(e, index) {
-                        return _this2.handleItemClicked(index + 1);
+                        return _this3.handleItemClicked(index + 1);
                     },
                     ItemRenderer: ItemRenderer,
                     disabled: disabled,
                     onHoverChanged: function onHoverChanged(index) {
-                        _this2.handleHoverChanged(index + 1);
+                        _this3.handleHoverChanged(index + 1);
                     }
                 }))
             );
