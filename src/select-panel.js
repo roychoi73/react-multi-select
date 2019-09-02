@@ -273,6 +273,7 @@ class SelectPanel extends Component<Props, State> {
                   focused={focusIndex === 0}
                   checked={this.allAreSelected()}
                   option={selectAllOption}
+                  allOption
                   onSelectionChanged={this.selectAllChanged}
                   onClick={() => this.handleItemClicked(0)}
                   ItemRenderer={ItemRenderer}
@@ -314,7 +315,7 @@ const styles = {
         lineHeight: '24px',
         border: 0,
         borderColor: '#dee2e4',
-        padding: '10px',
+        padding: '6px 30px 6px 10px',
         width: "100%",
         outline: "none",
         fontSize: '14px',
@@ -326,14 +327,14 @@ const styles = {
         position: 'relative',
         width: "100%",
         boxSizing : 'border-box',
-        padding: "0.5em",
+        padding: '16px 10px 14px',
     },
     searchIcon: {
         position: 'absolute',
         width: '24px',
         height: '24px',
-        top: '10px',
-        right: '10px',
+        top: '18px',
+        right: '15px',
     },
 };
 

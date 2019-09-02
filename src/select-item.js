@@ -118,12 +118,13 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
     // }
 
     render() {
-        const {ItemRenderer, option, checked, focused, disabled} = this.props;
+        const {ItemRenderer, option, checked, focused, disabled, allOption} = this.props;
         const {hovered} = this.state;
 
         const focusStyle = (focused || hovered)
             ? styles.itemContainerHover
             : undefined;
+        const allOptionStyle = allOption ? styles.allOptionStyle : null;
 
         return <label
             className="select-item"
@@ -131,7 +132,7 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
             aria-selected={checked}
             selected={checked}
             //tabIndex="-1"
-            style={{...styles.itemContainer, ...focusStyle}}
+            style={{...styles.itemContainer, ...focusStyle, ...allOptionStyle}}
             ref={ref => this.itemRef = ref}
             onMouseEnter={() => this.updateHover(true)}
             onMouseOut={() => this.updateHover(false)}
@@ -161,7 +162,7 @@ const styles = {
         color: '#666666',
         cursor: 'pointer',
         display: 'block',
-        padding: '8px 10px',
+        padding: '9px 20px'
     },
     itemContainerHover: {
         backgroundColor: 'rgba(134, 147, 201, 0.1)',
@@ -177,6 +178,11 @@ const styles = {
     },
     labelDisabled: {
         opacity: 0.5,
+    },
+    allOptionStyle: {
+        fontWeight: 'bold',
+        marginBottom: '4px',
+        borderBottom: '1px solid rgba(169, 177, 189, 0.2)',
     },
 };
 

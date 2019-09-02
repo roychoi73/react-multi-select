@@ -78,7 +78,7 @@ class MultiSelect extends Component<Props> {
         const customText = valueRenderer && valueRenderer(selected, options);
 
         if (noneSelected) {
-            return <span style={Object.assign({}, styles.noneSelected, style)}>
+            return <span className="noneSelected" style={Object.assign({}, styles.noneSelected, style)}>
                 {customText || getString("selectSomeItems", overrideStrings)}
             </span>;
         }
