@@ -119,7 +119,7 @@ var MultiSelect = function (_Component) {
             if (noneSelected) {
                 return _react2.default.createElement(
                     'span',
-                    { style: Object.assign({}, styles.noneSelected, style) },
+                    { className: 'noneSelected', style: Object.assign({}, styles.noneSelected, style) },
                     customText || (0, _getString2.default)("selectSomeItems", overrideStrings)
                 );
             }

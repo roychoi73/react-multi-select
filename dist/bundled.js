@@ -260,11 +260,13 @@ var SelectItem = function (_Component2) {
                 option = _props2.option,
                 checked = _props2.checked,
                 focused = _props2.focused,
-                disabled = _props2.disabled;
+                disabled = _props2.disabled,
+                allOption = _props2.allOption;
             var hovered = this.state.hovered;
 
 
             var focusStyle = focused || hovered ? styles.itemContainerHover : undefined;
+            var allOptionStyle = allOption ? styles.allOptionStyle : null;
 
             return _react2.default.createElement(
                 "label",
@@ -274,7 +276,7 @@ var SelectItem = function (_Component2) {
                     "aria-selected": checked,
                     selected: checked
                     //tabIndex="-1"
-                    , style: _extends({}, styles.itemContainer, focusStyle),
+                    , style: _extends({}, styles.itemContainer, focusStyle, allOptionStyle),
                     ref: function ref(_ref2) {
                         return _this3.itemRef = _ref2;
                     },
@@ -311,7 +313,7 @@ var styles = {
         color: '#666666',
         cursor: 'pointer',
         display: 'block',
-        padding: '8px 10px'
+        padding: '9px 20px'
     },
     itemContainerHover: {
         backgroundColor: 'rgba(134, 147, 201, 0.1)',
@@ -327,6 +329,11 @@ var styles = {
     },
     labelDisabled: {
         opacity: 0.5
+    },
+    allOptionStyle: {
+        fontWeight: 'bold',
+        marginBottom: '4px',
+        borderBottom: '1px solid rgba(169, 177, 189, 0.2)'
     }
 };
 
@@ -1085,6 +1092,7 @@ var SelectPanel = function (_Component) {
                     focused: focusIndex === 0,
                     checked: this.allAreSelected(),
                     option: selectAllOption,
+                    allOption: true,
                     onSelectionChanged: this.selectAllChanged,
                     onClick: function onClick() {
                         return _this3.handleItemClicked(0);
@@ -1130,7 +1138,7 @@ var styles = {
         lineHeight: '24px',
         border: 0,
         borderColor: '#dee2e4',
-        padding: '10px',
+        padding: '6px 30px 6px 10px',
         width: "100%",
         outline: "none",
         fontSize: '14px'
@@ -1142,14 +1150,14 @@ var styles = {
         position: 'relative',
         width: "100%",
         boxSizing: 'border-box',
-        padding: "0.5em"
+        padding: '16px 10px 14px'
     },
     searchIcon: {
         position: 'absolute',
         width: '24px',
         height: '24px',
-        top: '10px',
-        right: '10px'
+        top: '18px',
+        right: '15px'
     }
 };
 
@@ -1281,7 +1289,7 @@ var MultiSelect = function (_Component) {
             if (noneSelected) {
                 return _react2.default.createElement(
                     'span',
-                    { style: Object.assign({}, styles.noneSelected, style) },
+                    { className: 'noneSelected', style: Object.assign({}, styles.noneSelected, style) },
                     customText || (0, _getString2.default)("selectSomeItems", overrideStrings)
                 );
             }

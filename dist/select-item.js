@@ -154,11 +154,13 @@ var SelectItem = function (_Component2) {
                 option = _props2.option,
                 checked = _props2.checked,
                 focused = _props2.focused,
-                disabled = _props2.disabled;
+                disabled = _props2.disabled,
+                allOption = _props2.allOption;
             var hovered = this.state.hovered;
 
 
             var focusStyle = focused || hovered ? styles.itemContainerHover : undefined;
+            var allOptionStyle = allOption ? styles.allOptionStyle : null;
 
             return _react2.default.createElement(
                 "label",
@@ -168,7 +170,7 @@ var SelectItem = function (_Component2) {
                     "aria-selected": checked,
                     selected: checked
                     //tabIndex="-1"
-                    , style: _extends({}, styles.itemContainer, focusStyle),
+                    , style: _extends({}, styles.itemContainer, focusStyle, allOptionStyle),
                     ref: function ref(_ref2) {
                         return _this3.itemRef = _ref2;
                     },
@@ -205,7 +207,7 @@ var styles = {
         color: '#666666',
         cursor: 'pointer',
         display: 'block',
-        padding: '8px 10px'
+        padding: '9px 20px'
     },
     itemContainerHover: {
         backgroundColor: 'rgba(134, 147, 201, 0.1)',
@@ -221,6 +223,11 @@ var styles = {
     },
     labelDisabled: {
         opacity: 0.5
+    },
+    allOptionStyle: {
+        fontWeight: 'bold',
+        marginBottom: '4px',
+        borderBottom: '1px solid rgba(169, 177, 189, 0.2)'
     }
 };
 
