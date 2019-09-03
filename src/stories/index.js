@@ -143,7 +143,7 @@ class StatefulMultiSelect extends Component<SMSProps, SMSState> {
         } = this.props;
         const {selected} = this.state;
 
-        return <div>
+        return <div style={{marginTop: '300px'}}>
             <MultiSelect
                 options={options}
                 onSelectedChanged={this.handleSelectedChanged.bind(this)}

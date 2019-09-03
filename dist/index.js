@@ -59,7 +59,11 @@ var MultiSelect = function (_Component) {
             args[_key] = arguments[_key];
         }
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MultiSelect.__proto__ || Object.getPrototypeOf(MultiSelect)).call.apply(_ref, [this].concat(args))), _this), _this.handleSelectedChanged = function (selected) {
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = MultiSelect.__proto__ || Object.getPrototypeOf(MultiSelect)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+            expanded: false,
+            expandedStyle: {},
+            wrapperStyle: {}
+        }, _this.containerRef = null, _this.dropdownRef = null, _this.backDropRef = null, _this.contentHeight = 0, _this.handleSelectedChanged = function (selected) {
             var _this$props = _this.props,
                 onSelectedChanged = _this$props.onSelectedChanged,
                 disabled = _this$props.disabled;
@@ -71,6 +75,46 @@ var MultiSelect = function (_Component) {
 
             if (onSelectedChanged) {
                 onSelectedChanged(selected);
+            }
+        }, _this.handleToggleExpanded = function (expanded) {
+            if (expanded) {
+                if (_this.dropdownRef && _this.dropdownRef.dropdownContentRef) {
+                    var clientHeight = document.body.clientHeight;
+
+                    var containerOffset = _this.containerRef.getBoundingClientRect();
+                    var contentOffset = _this.dropdownRef.dropdownContentRef.getBoundingClientRect();
+
+                    _this.backDropRef.style.display = 'block';
+                    var backDropOffset = _this.backDropRef.getBoundingClientRect();
+                    var dropdownContentRef = _this.dropdownRef.dropdownContentRef;
+
+                    _this.backDropRef.appendChild(dropdownContentRef);
+                    dropdownContentRef.style.minWidth = containerOffset.width + 'px';
+                    dropdownContentRef.style.top = '';
+                    if (clientHeight < containerOffset.bottom + contentOffset.height - 20) {
+                        dropdownContentRef.style.left = containerOffset.left - backDropOffset.left + 'px';
+                        dropdownContentRef.style.bottom = '20px';
+                    } else {
+                        dropdownContentRef.style.top = containerOffset.bottom - backDropOffset.top + 'px';
+                        dropdownContentRef.style.left = containerOffset.left - backDropOffset.left + 'px';
+                    }
+                }
+            } else {
+                _this.dropdownRef.wrapper.appendChild(_this.dropdownRef.dropdownContentRef);
+                _this.dropdownRef.dropdownContentRef.style.top = '100%';
+                _this.dropdownRef.dropdownContentRef.style.left = '';
+                _this.dropdownRef.dropdownContentRef.style.bottom = '';
+            }
+
+            _this.setState({
+                expanded: expanded
+            });
+        }, _this.handleBackDropClick = function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (_this.dropdownRef) {
+                _this.dropdownRef.toggleExpanded(false);
             }
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
@@ -140,7 +184,23 @@ var MultiSelect = function (_Component) {
         }
     }, {
         key: 'render',
+
+
+        // handleUpdateContent = (expanded) => {
+        //     if (expanded && this.dropdownRef && this.dropdownRef.dropdownContentRef) {
+        //         console.log(this.dropdownRef);
+        //         const {
+        //             height: contentHeight,
+        //         } = this.dropdownRef.dropdownContentRef.getBoundingClientRect();
+        //         if (this.contentHeight !== contentHeight) {
+        //            this.handleToggleExpanded(expanded);
+        //         }
+        //     }
+        // }
+
         value: function render() {
+            var _this2 = this;
+
             var _props3 = this.props,
                 ItemRenderer = _props3.ItemRenderer,
                 options = _props3.options,
@@ -153,34 +213,61 @@ var MultiSelect = function (_Component) {
                 shouldToggleOnHover = _props3.shouldToggleOnHover,
                 hasSelectAll = _props3.hasSelectAll,
                 overrideStrings = _props3.overrideStrings;
+            var _state = this.state,
+                expanded = _state.expanded,
+                contentStyle = _state.contentStyle;
 
 
             return _react2.default.createElement(
                 'div',
                 { className: 'multi-select' },
                 _react2.default.createElement(
-                    _dropdown2.default,
+                    'div',
                     {
-                        isLoading: isLoading,
-                        contentComponent: _selectPanel2.default,
-                        shouldToggleOnHover: shouldToggleOnHover,
-                        contentProps: {
-                            ItemRenderer: ItemRenderer,
-                            options: options,
-                            selected: selected,
-                            hasSelectAll: hasSelectAll,
-                            selectAllLabel: selectAllLabel,
-                            onSelectedChanged: this.handleSelectedChanged,
-                            disabled: disabled,
-                            disableSearch: disableSearch,
-                            filterOptions: filterOptions,
-                            overrideStrings: overrideStrings
-                        },
-                        disabled: disabled,
-                        arrowIcon: true
+                        className: 'multi-select-body',
+                        ref: function ref(_ref3) {
+                            _this2.containerRef = _ref3;
+                        }
                     },
-                    this.renderHeader()
-                )
+                    _react2.default.createElement(
+                        _dropdown2.default,
+                        {
+                            isLoading: isLoading,
+                            contentComponent: _selectPanel2.default,
+                            shouldToggleOnHover: shouldToggleOnHover,
+                            contentProps: {
+                                ItemRenderer: ItemRenderer,
+                                options: options,
+                                selected: selected,
+                                hasSelectAll: hasSelectAll,
+                                selectAllLabel: selectAllLabel,
+                                onSelectedChanged: this.handleSelectedChanged,
+                                // onToggleExpanded: this.handleUpdateContent,
+                                disabled: disabled,
+                                disableSearch: disableSearch,
+                                filterOptions: filterOptions,
+                                overrideStrings: overrideStrings
+                            },
+                            disabled: disabled,
+                            arrowIcon: true,
+                            onToggleExpanded: this.handleToggleExpanded,
+                            contentStyle: contentStyle,
+                            ref: function ref(_ref2) {
+                                _this2.dropdownRef = _ref2;
+                            }
+                        },
+                        this.renderHeader()
+                    )
+                ),
+                _react2.default.createElement('div', {
+                    className: 'multi-select-backdrop',
+                    style: Object.assign({}, styles.backDrop, { display: expanded ? 'block' : 'none' }),
+                    onMouseDown: this.handleBackDropClick,
+                    onTouchStart: this.handleBackDropClick,
+                    ref: function ref(_ref4) {
+                        _this2.backDropRef = _ref4;
+                    }
+                })
             );
         }
     }]);
@@ -190,13 +277,25 @@ var MultiSelect = function (_Component) {
 
 MultiSelect.defaultProps = {
     hasSelectAll: true,
-    shouldToggleOnHover: false
+    shouldToggleOnHover: false,
+    optionHeight: 41,
+    searchHeight: 62
 };
 
 
 var styles = {
     noneSelected: {
         color: "#999"
+    },
+    backDrop: {
+        // width: '100%',
+        // height: '100%',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 999
     }
 };
 

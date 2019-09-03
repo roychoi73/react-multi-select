@@ -101,6 +101,7 @@ var Dropdown = function (_Component) {
         }, _this.handleDocumentClick = function (event) {
             if (_this.wrapper && !_this.wrapper.contains(event.target)) {
                 _this.setState({ expanded: false });
+                _this.onToggleExpanded(false);
             }
         }, _this.handleKeyDown = function (e) {
             switch (e.which) {
@@ -128,6 +129,12 @@ var Dropdown = function (_Component) {
 
             if (e.target === _this.wrapper && !hasFocus) {
                 _this.setState({ hasFocus: true });
+            }
+        }, _this.onToggleExpanded = function (expanded) {
+            if (typeof _this.props.onToggleExpanded === 'function') {
+                setTimeout(function () {
+                    _this.props.onToggleExpanded(expanded);
+                }, 200);
             }
         }, _this.handleBlur = function (e) {
             var hasFocus = _this.state.hasFocus;
@@ -160,13 +167,15 @@ var Dropdown = function (_Component) {
 
             _this.setState({ expanded: newExpanded });
 
-            if (newExpanded && _this.selectPanel) {
-                //_this.selectPanel.focusSearch();
-            }
+            _this.onToggleExpanded(newExpanded);
 
-            if (!newExpanded && _this.wrapper) {
-                //_this.wrapper.focus();
-            }
+            // if (newExpanded && _this.selectPanel) {
+            //     //_this.selectPanel.focusSearch();
+            // }
+
+            // if (!newExpanded && _this.wrapper) {
+            //     //_this.wrapper.focus();
+            // }
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -174,16 +183,19 @@ var Dropdown = function (_Component) {
         key: 'selectPanel',
         value: null
     }, {
+        key: 'dropdownContentRef',
+        value: null
+    }, {
         key: 'componentWillUpdate',
         value: function componentWillUpdate() {
-            document.addEventListener('touchstart', this.handleDocumentClick);
-            document.addEventListener('mousedown', this.handleDocumentClick);
+            // document.addEventListener('touchstart', this.handleDocumentClick);
+            // document.addEventListener('mousedown', this.handleDocumentClick);
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            document.removeEventListener('touchstart', this.handleDocumentClick);
-            document.removeEventListener('mousedown', this.handleDocumentClick);
+            // document.removeEventListener('touchstart', this.handleDocumentClick);
+            // document.removeEventListener('mousedown', this.handleDocumentClick);
         }
     }, {
         key: 'renderPanel',
@@ -214,6 +226,7 @@ var Dropdown = function (_Component) {
                 arrowIcon = _props2.arrowIcon,
                 ContentComponent = _props2.contentComponent,
                 contentProps = _props2.contentProps;
+            //contentStyle = _props2.contentStyle || {};
 
             var expandedHeaderStyle = expanded ? styles.dropdownHeaderExpanded : undefined;
 
@@ -280,9 +293,12 @@ var Dropdown = function (_Component) {
             //expanded && this.renderPanel()
             _react2.default.createElement('div', {
                 className: 'dropdown-content',
-                style: _extends({}, styles.panelContainer, !expanded ? styles.panelContainerCollapsed : {})
-            }, _react2.default.createElement(ContentComponent, _extends({}, contentProps, { ref: function ref(_ref3) {
-                    _this4.selectPanel = _ref3;
+                style: _extends({}, styles.panelContainer, !expanded ? styles.panelContainerCollapsed : {}),
+                ref: function ref(_ref3) {
+                    return _this4.dropdownContentRef = _ref3;
+                }
+            }, _react2.default.createElement(ContentComponent, _extends({}, contentProps, { ref: function ref(_ref4) {
+                    _this4.selectPanel = _ref4;
                 } }))));
         }
     }]);

@@ -176,6 +176,12 @@ var SelectPanel = function (_Component) {
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
+    // componentDidUpdate() {
+    //     if (typeof this.props.onToggleExpanded === 'function') {
+    //         this.props.onToggleExpanded(this.expanded);
+    //     }
+    // }
+
     _createClass(SelectPanel, [{
         key: 'allAreSelected',
         value: function allAreSelected() {

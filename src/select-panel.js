@@ -23,7 +23,8 @@ type Props = {
     disableSearch?: boolean,
     hasSelectAll: boolean,
     filterOptions?: (options: Array<Option>, filter: string) => Array<Option>,
-    overrideStrings?: {[string]: string}
+    overrideStrings?: {[string]: string},
+    onToggleExpanded?: (expanded: boolean) => void
 };
 
 type State = {
@@ -43,6 +44,12 @@ class SelectPanel extends Component<Props, State> {
     inputRef = null;
 
     expanded = false;
+
+    // componentDidUpdate() {
+    //     if (typeof this.props.onToggleExpanded === 'function') {
+    //         this.props.onToggleExpanded(this.expanded);
+    //     }
+    // }
 
     selectAll = () => {
         const {onSelectedChanged, options} = this.props;
