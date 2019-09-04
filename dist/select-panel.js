@@ -163,6 +163,9 @@ var SelectPanel = function (_Component) {
                 if (_this.inputRef) {
                     _this.inputRef.focus();
                 }
+                if (typeof _this.props.onToggleExpanded === 'function') {
+                    _this.props.onToggleExpanded(expanded);
+                }
             } else if (!expanded) {
                 _this.expanded = expanded;
                 _this.setState({

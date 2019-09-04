@@ -204,6 +204,9 @@ class SelectPanel extends Component<Props, State> {
             if (this.inputRef) {
                 this.inputRef.focus();
             }
+            if (typeof this.props.onToggleExpanded === 'function') {
+                this.props.onToggleExpanded(expanded);
+            }
         } else if (!expanded) {
             this.expanded = expanded;
             this.setState({

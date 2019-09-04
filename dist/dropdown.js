@@ -101,7 +101,6 @@ var Dropdown = function (_Component) {
         }, _this.handleDocumentClick = function (event) {
             if (_this.wrapper && !_this.wrapper.contains(event.target)) {
                 _this.setState({ expanded: false });
-                _this.onToggleExpanded(false);
             }
         }, _this.handleKeyDown = function (e) {
             switch (e.which) {
@@ -129,12 +128,6 @@ var Dropdown = function (_Component) {
 
             if (e.target === _this.wrapper && !hasFocus) {
                 _this.setState({ hasFocus: true });
-            }
-        }, _this.onToggleExpanded = function (expanded) {
-            if (typeof _this.props.onToggleExpanded === 'function') {
-                setTimeout(function () {
-                    _this.props.onToggleExpanded(expanded);
-                }, 200);
             }
         }, _this.handleBlur = function (e) {
             var hasFocus = _this.state.hasFocus;
@@ -166,8 +159,6 @@ var Dropdown = function (_Component) {
             var newExpanded = value === undefined ? !expanded : !!value;
 
             _this.setState({ expanded: newExpanded });
-
-            _this.onToggleExpanded(newExpanded);
 
             // if (newExpanded && _this.selectPanel) {
             //     //_this.selectPanel.focusSearch();
@@ -431,8 +422,9 @@ var styles = {
         minWidth: '100%',
         zIndex: 100,
         overflowY: 'auto',
-        transition: 'all .25s',
-        transform: 'translate3d(0, 0, 0)' // 'scale(1)',
+        visibility: 'hidden'
+        // transition: 'all .25s',
+        // transform: 'translate3d(0, 0, 0)', // 'scale(1)',
     },
     panelContainerCollapsed: {
         maxHeight: 0,

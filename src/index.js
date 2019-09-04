@@ -51,17 +51,29 @@ class MultiSelect extends Component<Props> {
         searchHeight: 62,
     }
 
-    state = {
-        expanded: false,
-        expandedStyle: {},
-        wrapperStyle: {},
+    componentDidMount() {
+        window.addEventListener('resize', this.onResize);
+        window.addEventListener('scroll', this.onResize);
     }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onResize);
+        window.removeEventListener('scroll', this.onResize);
+    }
+
+    expanded = false;
 
     containerRef = null;
     dropdownRef = null;
     backDropRef = null
 
     contentHeight = 0;
+
+    onResize = () => {
+        if (this.expanded) {
+            this.handleToggleExpanded(this.expanded);
+        }
+    }
 
     getSelectedText() {
         const {options, selected} = this.props;
@@ -124,6 +136,8 @@ class MultiSelect extends Component<Props> {
     }
 
     handleToggleExpanded = (expanded) => {
+        this.expanded = expanded;
+
         if (expanded) {
             if (this.dropdownRef && this.dropdownRef.dropdownContentRef) {
                 const {
@@ -139,6 +153,9 @@ class MultiSelect extends Component<Props> {
                 this.backDropRef.appendChild(dropdownContentRef);
                 dropdownContentRef.style.minWidth = `${containerOffset.width}px`;
                 dropdownContentRef.style.top = '';
+                dropdownContentRef.style.maxHeight = 0;
+                dropdownContentRef.style.transition = 'all .25s';
+
                 if (clientHeight < containerOffset.bottom + contentOffset.height - 20) {
                     dropdownContentRef.style.left = `${containerOffset.left - backDropOffset.left}px`;
                     dropdownContentRef.style.bottom = '20px';
@@ -146,40 +163,34 @@ class MultiSelect extends Component<Props> {
                     dropdownContentRef.style.top = `${containerOffset.bottom - backDropOffset.top}px`;
                     dropdownContentRef.style.left = `${containerOffset.left - backDropOffset.left}px`;
                 }
-            }
 
+                dropdownContentRef.style.visibility = 'visible';
+                dropdownContentRef.style.maxHeight = '300px';
+            }
         } else {
+            this.backDropRef.style.display = 'none';
+            const dropdownContentRef = this.dropdownRef.dropdownContentRef;
             this.dropdownRef.wrapper.appendChild(this.dropdownRef.dropdownContentRef);
-            this.dropdownRef.dropdownContentRef.style.top = '100%';
-            this.dropdownRef.dropdownContentRef.style.left = '';
-            this.dropdownRef.dropdownContentRef.style.bottom = '';
+            dropdownContentRef.style.top = '100%';
+            dropdownContentRef.style.left = '';
+            dropdownContentRef.style.bottom = '';
+            dropdownContentRef.style.transition = 'unset';
+            dropdownContentRef.style.visibility = 'hidden';
         }
 
-        this.setState({
-            expanded,
-        });
+        
     }
 
     handleBackDropClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
 
+        this.handleToggleExpanded(false);
+
         if (this.dropdownRef) {
             this.dropdownRef.toggleExpanded(false);
         }
     }
-
-    // handleUpdateContent = (expanded) => {
-    //     if (expanded && this.dropdownRef && this.dropdownRef.dropdownContentRef) {
-    //         console.log(this.dropdownRef);
-    //         const {
-    //             height: contentHeight,
-    //         } = this.dropdownRef.dropdownContentRef.getBoundingClientRect();
-    //         if (this.contentHeight !== contentHeight) {
-    //            this.handleToggleExpanded(expanded);
-    //         }
-    //     }
-    // }
 
     render() {
         const {
@@ -195,11 +206,6 @@ class MultiSelect extends Component<Props> {
             hasSelectAll,
             overrideStrings,
         } = this.props;
-
-        const {
-            expanded,
-            contentStyle,
-        } = this.state;
 
         return <div className="multi-select">
             <div
@@ -219,7 +225,7 @@ class MultiSelect extends Component<Props> {
                         hasSelectAll,
                         selectAllLabel,
                         onSelectedChanged: this.handleSelectedChanged,
-                        // onToggleExpanded: this.handleUpdateContent,
+                        onToggleExpanded: this.handleToggleExpanded,
                         disabled,
                         disableSearch,
                         filterOptions,
@@ -227,8 +233,6 @@ class MultiSelect extends Component<Props> {
                     }}
                     disabled={disabled}
                     arrowIcon
-                    onToggleExpanded={this.handleToggleExpanded}
-                    contentStyle={contentStyle}
                     ref={ref => {
                         this.dropdownRef = ref;
                     }}
@@ -238,7 +242,7 @@ class MultiSelect extends Component<Props> {
             </div>
             <div
                 className="multi-select-backdrop"
-                style={Object.assign({}, styles.backDrop, {display: expanded ? 'block'  : 'none'})}
+                style={styles.backDrop}
                 onMouseDown={this.handleBackDropClick}
                 onTouchStart={this.handleBackDropClick}
                 ref={ref => {
@@ -256,6 +260,7 @@ const styles = {
     backDrop: {
         // width: '100%',
         // height: '100%',
+        display: 'none',
         position: 'fixed',
         top: 0,
         left: 0,
