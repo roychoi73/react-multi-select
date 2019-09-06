@@ -95,10 +95,15 @@ var MultiSelect = function (_Component) {
                     dropdownContentRef.style.top = '';
                     dropdownContentRef.style.maxHeight = 0;
                     dropdownContentRef.style.transition = 'all .25s';
+                    dropdownContentRef.style.height = contentOffset.height + 'px';
 
                     if (clientHeight < containerOffset.bottom + contentOffset.height - 20) {
                         dropdownContentRef.style.left = containerOffset.left - backDropOffset.left + 'px';
-                        dropdownContentRef.style.bottom = '20px';
+                        if (clientHeight < backDropOffset.bottom) {
+                            dropdownContentRef.style.bottom = backDropOffset.bottom - clientHeight + 20 + 'px';
+                        } else {
+                            dropdownContentRef.style.bottom = '20px';
+                        }
                     } else {
                         dropdownContentRef.style.top = containerOffset.bottom - backDropOffset.top + 'px';
                         dropdownContentRef.style.left = containerOffset.left - backDropOffset.left + 'px';
@@ -106,6 +111,12 @@ var MultiSelect = function (_Component) {
 
                     dropdownContentRef.style.visibility = 'visible';
                     dropdownContentRef.style.maxHeight = '300px';
+                    if (_this.dropdownRef.selectPanel) {
+                        _this.dropdownRef.selectPanel.focus();
+                        if (_this.dropdownRef.selectPanel.scrollbarRef) {
+                            _this.dropdownRef.selectPanel.scrollbarRef.update();
+                        }
+                    }
                 }
             } else {
                 _this.backDropRef.style.display = 'none';
@@ -220,7 +231,8 @@ var MultiSelect = function (_Component) {
                 filterOptions = _props3.filterOptions,
                 shouldToggleOnHover = _props3.shouldToggleOnHover,
                 hasSelectAll = _props3.hasSelectAll,
-                overrideStrings = _props3.overrideStrings;
+                overrideStrings = _props3.overrideStrings,
+                scrollbarComponent = _props3.scrollbarComponent;
 
 
             return _react2.default.createElement(
@@ -251,7 +263,8 @@ var MultiSelect = function (_Component) {
                                 disabled: disabled,
                                 disableSearch: disableSearch,
                                 filterOptions: filterOptions,
-                                overrideStrings: overrideStrings
+                                overrideStrings: overrideStrings,
+                                scrollbarComponent: scrollbarComponent
                             },
                             disabled: disabled,
                             arrowIcon: true,

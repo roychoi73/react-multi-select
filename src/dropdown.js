@@ -157,23 +157,6 @@ const Dropdown = function (_Component) {
             // document.removeEventListener('mousedown', this.handleDocumentClick);
         }
     }, {
-        key: 'renderPanel',
-        value: function renderPanel() {
-            var _props = this.props,
-                ContentComponent = _props.contentComponent,
-                contentProps = _props.contentProps;
-
-
-            return _react2.default.createElement(
-                'div',
-                {
-                    className: 'dropdown-content',
-                    style: styles.panelContainer
-                },
-                _react2.default.createElement(ContentComponent, contentProps)
-            );
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
@@ -287,7 +270,6 @@ const Dropdown = function (_Component) {
                         ) : _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle)})
                     )
                 ),
-                //expanded && this.renderPanel()
                 _react2.default.createElement(
                     'div',
                     {
@@ -432,6 +414,8 @@ const styles = {
         zIndex: 100,
         overflowY: 'auto',
         visibility: 'hidden',
+        msOverflowStyle: '-ms-autohiding-scrollbar',
+        display: 'flex',
         // transition: 'all .25s',
         // transform: 'translate3d(0, 0, 0)', // 'scale(1)',
     },

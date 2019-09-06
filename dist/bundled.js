@@ -271,7 +271,7 @@ var SelectItem = function (_Component2) {
             return _react2.default.createElement(
                 "label",
                 {
-                    className: "select-item",
+                    className: "select-item" + (focused || hovered ? ' focused' : ''),
                     role: "option",
                     "aria-selected": checked,
                     selected: checked
@@ -535,18 +535,6 @@ var Dropdown = function (_Component) {
             // document.removeEventListener('mousedown', this.handleDocumentClick);
         }
     }, {
-        key: 'renderPanel',
-        value: function renderPanel() {
-            var _props = this.props,
-                ContentComponent = _props.contentComponent,
-                contentProps = _props.contentProps;
-
-            return _react2.default.createElement('div', {
-                className: 'dropdown-content',
-                style: styles.panelContainer
-            }, _react2.default.createElement(ContentComponent, contentProps));
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this4 = this;
@@ -626,9 +614,7 @@ var Dropdown = function (_Component) {
                 fill: '#6D7381',
                 'fillRule': 'nonzero',
                 d: 'M6.336 9.34a1.17 1.17 0 0 0-.01 1.63l.01.01 4.45 4.51a1.7 1.7 0 0 0 2.427 0l4.45-4.51a1.17 1.17 0 0 0 0-1.64 1.132 1.132 0 0 0-1.617 0L12 13.441l-4.047-4.1a1.132 1.132 0 0 0-1.617 0'
-            }))) : _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle) }))),
-            //expanded && this.renderPanel()
-            _react2.default.createElement('div', {
+            }))) : _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle) }))), _react2.default.createElement('div', {
                 className: 'dropdown-content',
                 style: _extends({}, styles.panelContainer, !expanded ? styles.panelContainerCollapsed : {}),
                 ref: function ref(_ref3) {
@@ -768,7 +754,9 @@ var styles = {
         minWidth: '100%',
         zIndex: 100,
         overflowY: 'auto',
-        visibility: 'hidden'
+        visibility: 'hidden',
+        msOverflowStyle: '-ms-autohiding-scrollbar',
+        display: 'flex'
         // transition: 'all .25s',
         // transform: 'translate3d(0, 0, 0)', // 'scale(1)',
     },
@@ -832,68 +820,96 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  */
 
 
-var SelectPanel = function (_Component) {
-    _inherits(SelectPanel, _Component);
+var defaultScrollbarComponent = function (_Component) {
+    _inherits(defaultScrollbarComponent, _Component);
 
-    function SelectPanel() {
+    function defaultScrollbarComponent() {
         var _ref;
 
         var _temp, _this, _ret;
 
-        _classCallCheck(this, SelectPanel);
+        _classCallCheck(this, defaultScrollbarComponent);
 
         for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
             args[_key] = arguments[_key];
         }
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = SelectPanel.__proto__ || Object.getPrototypeOf(SelectPanel)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = defaultScrollbarComponent.__proto__ || Object.getPrototypeOf(defaultScrollbarComponent)).call.apply(_ref, [this].concat(args))), _this), _this.scrollTop = function () {}, _this.update = function () {}, _this.render = function () {
+            return _react2.default.createElement(
+                'div',
+                null,
+                _this.props.children
+            );
+        }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    return defaultScrollbarComponent;
+}(_react.Component);
+
+;
+
+var SelectPanel = function (_Component2) {
+    _inherits(SelectPanel, _Component2);
+
+    function SelectPanel() {
+        var _ref2;
+
+        var _temp2, _this2, _ret2;
+
+        _classCallCheck(this, SelectPanel);
+
+        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+        }
+
+        return _ret2 = (_temp2 = (_this2 = _possibleConstructorReturn(this, (_ref2 = SelectPanel.__proto__ || Object.getPrototypeOf(SelectPanel)).call.apply(_ref2, [this].concat(args))), _this2), _this2.state = {
             searchHasFocus: false,
             searchText: "",
             focusIndex: -1
-        }, _this.inputRef = null, _this.expanded = false, _this.selectAll = function () {
-            var _this$props = _this.props,
-                onSelectedChanged = _this$props.onSelectedChanged,
-                options = _this$props.options;
+        }, _this2.inputRef = null, _this2.scrollbarRef = null, _this2.expanded = false, _this2.selectAll = function () {
+            var _this2$props = _this2.props,
+                onSelectedChanged = _this2$props.onSelectedChanged,
+                options = _this2$props.options;
 
             var allValues = options.map(function (o) {
                 return o.value;
             });
 
             onSelectedChanged(allValues);
-        }, _this.selectNone = function () {
-            var onSelectedChanged = _this.props.onSelectedChanged;
+        }, _this2.selectNone = function () {
+            var onSelectedChanged = _this2.props.onSelectedChanged;
 
 
             onSelectedChanged([]);
-        }, _this.selectAllChanged = function (checked) {
+        }, _this2.selectAllChanged = function (checked) {
             if (checked) {
-                _this.selectAll();
+                _this2.selectAll();
             } else {
-                _this.selectNone();
+                _this2.selectNone();
             }
-        }, _this.handleSearchChange = function (e) {
-            _this.setState({
+        }, _this2.handleSearchChange = function (e) {
+            _this2.setState({
                 searchText: e.target.value,
                 focusIndex: -1
             });
-        }, _this.handleItemClicked = function (index) {
-            _this.setState({ focusIndex: index });
-        }, _this.clearSearch = function () {
-            _this.setState({ searchText: "" });
-        }, _this.toggleChecked = function () {
-            var focusIndex = _this.state.focusIndex;
-            var _this$props2 = _this.props,
-                options = _this$props2.options,
-                selected = _this$props2.selected,
-                disabled = _this$props2.disabled,
-                onSelectedChanged = _this$props2.onSelectedChanged;
+        }, _this2.handleItemClicked = function (index) {
+            _this2.setState({ focusIndex: index });
+        }, _this2.clearSearch = function () {
+            _this2.setState({ searchText: "" });
+        }, _this2.toggleChecked = function () {
+            var focusIndex = _this2.state.focusIndex;
+            var _this2$props2 = _this2.props,
+                options = _this2$props2.options,
+                selected = _this2$props2.selected,
+                disabled = _this2$props2.disabled,
+                onSelectedChanged = _this2$props2.onSelectedChanged;
 
 
             if (focusIndex === 0) {
                 if (selected.length === options.length) {
-                    _this.selectNone();
+                    _this2.selectNone();
                 } else {
-                    _this.selectAll();
+                    _this2.selectAll();
                 }
                 return;
             }
@@ -911,12 +927,12 @@ var SelectPanel = function (_Component) {
                 var removed = [].concat(_toConsumableArray(selected.slice(0, optionIndex)), _toConsumableArray(selected.slice(optionIndex + 1)));
                 onSelectedChanged(removed);
             }
-        }, _this.handleKeyDown = function (e) {
+        }, _this2.handleKeyDown = function (e) {
             switch (e.which) {
                 case 13: // Enter
                 case 32:
                     // Space
-                    _this.toggleChecked();
+                    _this2.toggleChecked();
                     break;
                 case 38:
                     // Up Arrow
@@ -924,7 +940,7 @@ var SelectPanel = function (_Component) {
                         return;
                     }
 
-                    _this.updateFocus(-1);
+                    _this2.updateFocus(-1);
                     break;
                 case 40:
                     // Down Arrow
@@ -932,7 +948,7 @@ var SelectPanel = function (_Component) {
                         return;
                     }
 
-                    _this.updateFocus(1);
+                    _this2.updateFocus(1);
                     break;
                 default:
                     return;
@@ -940,39 +956,51 @@ var SelectPanel = function (_Component) {
 
             e.stopPropagation();
             e.preventDefault();
-        }, _this.handleSearchFocus = function (searchHasFocus) {
-            _this.setState({
+        }, _this2.handleSearchFocus = function (searchHasFocus) {
+            _this2.setState({
                 searchHasFocus: searchHasFocus,
                 focusIndex: -1
             });
-        }, _this.handleHoverChanged = function (index) {
-            _this.updateFocus(index - _this.state.focusIndex);
-        }, _this.expandedChange = function (expanded) {
-            if (!_this.expanded && expanded) {
-                _this.expanded = expanded;
-                if (_this.inputRef) {
-                    _this.inputRef.focus();
+        }, _this2.handleHoverChanged = function (index) {
+            _this2.updateFocus(index - _this2.state.focusIndex);
+        }, _this2.focus = function () {
+            if (_this2.expanded && _this2.inputRef) {
+                _this2.inputRef.focus();
+            }
+        }, _this2.expandedChange = function (expanded) {
+            if (!_this2.expanded && expanded) {
+                _this2.expanded = expanded;
+                if (_this2.inputRef) {
+                    _this2.inputRef.focus();
                 }
-                if (typeof _this.props.onToggleExpanded === 'function') {
-                    _this.props.onToggleExpanded(expanded);
+                if (typeof _this2.props.onToggleExpanded === 'function') {
+                    _this2.props.onToggleExpanded(expanded);
                 }
             } else if (!expanded) {
-                _this.expanded = expanded;
-                _this.setState({
+                _this2.expanded = expanded;
+                _this2.setState({
                     focusIndex: -1
                 });
             }
-        }, _this.clearSearchText = function () {
-            _this.setState({
+        }, _this2.clearSearchText = function () {
+            _this2.setState({
                 searchText: ''
             });
-        }, _temp), _possibleConstructorReturn(_this, _ret);
+        }, _temp2), _possibleConstructorReturn(_this2, _ret2);
     }
 
     // componentDidUpdate() {
     //     if (typeof this.props.onToggleExpanded === 'function') {
     //         this.props.onToggleExpanded(this.expanded);
     //     }
+    // }
+
+    // componentDidMount() {
+    //     document.body.addEventListener()
+    // }
+
+    // componentWillReceiveProps() {
+
     // }
 
     _createClass(SelectPanel, [{
@@ -998,7 +1026,7 @@ var SelectPanel = function (_Component) {
     }, {
         key: 'updateFocus',
         value: function updateFocus(offset) {
-            var _this2 = this;
+            var _this3 = this;
 
             var focusIndex = this.state.focusIndex;
             var options = this.props.options;
@@ -1010,13 +1038,13 @@ var SelectPanel = function (_Component) {
 
             this.setState({ focusIndex: newFocus }, function () {
                 try {
-                    var container = _this2.panelRef.parentElement;
+                    var container = _this3.panelRef.parentElement;
                     var scrollTop = container.scrollTop;
 
                     var _container$getBoundin = container.getBoundingClientRect(),
                         height = _container$getBoundin.height;
 
-                    var focusItemTop = 46 + (_this2.props.disableSearch ? 0 : 36) + newFocus * 36;
+                    var focusItemTop = 46 + (_this3.props.disableSearch ? 0 : 36) + newFocus * 36;
                     if (newFocus === 0) {
                         container.scrollTo(0, 0);
                     } else if (offset > 0 && height + scrollTop < focusItemTop) {
@@ -1032,7 +1060,7 @@ var SelectPanel = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             var _state = this.state,
                 focusIndex = _state.focusIndex,
@@ -1043,7 +1071,9 @@ var SelectPanel = function (_Component) {
                 disabled = _props3.disabled,
                 disableSearch = _props3.disableSearch,
                 hasSelectAll = _props3.hasSelectAll,
-                overrideStrings = _props3.overrideStrings;
+                overrideStrings = _props3.overrideStrings,
+                _props3$scrollbarComp = _props3.scrollbarComponent,
+                scrollbarComponent = _props3$scrollbarComp === undefined ? defaultScrollbarComponent : _props3$scrollbarComp;
 
 
             var selectAllOption = {
@@ -1051,87 +1081,98 @@ var SelectPanel = function (_Component) {
                 value: ""
             };
 
+            var Scrollbars = scrollbarComponent;
+
             return _react2.default.createElement(
-                'div',
+                Scrollbars,
                 {
-                    className: 'select-panel',
-                    style: styles.panel,
-                    role: 'listbox',
-                    onKeyDown: this.handleKeyDown,
-                    ref: function ref(_ref3) {
-                        return _this3.panelRef = _ref3;
+                    ref: function ref(_ref5) {
+                        _this4.scrollbarRef = _ref5;
                     }
                 },
-                !disableSearch && _react2.default.createElement(
+                _react2.default.createElement(
                     'div',
-                    { style: styles.searchContainer },
-                    _react2.default.createElement('input', {
-                        autoFocus: true,
-                        ref: function ref(_ref2) {
-                            _this3.inputRef = _ref2;
+                    {
+                        className: 'select-panel',
+                        style: styles.panel,
+                        role: 'listbox'
+                        //onKeyDown={this.handleKeyDown}
+                        , onKeyDownCapture: this.handleKeyDown,
+                        ref: function ref(_ref4) {
+                            return _this4.panelRef = _ref4;
+                        }
+                    },
+                    !disableSearch && _react2.default.createElement(
+                        'div',
+                        { style: styles.searchContainer },
+                        _react2.default.createElement('input', {
+                            autoFocus: true,
+                            ref: function ref(_ref3) {
+                                _this4.inputRef = _ref3;
+                            },
+                            value: searchText,
+                            className: 'dropdown-search-input',
+                            placeholder: (0, _getString2.default)("search", overrideStrings),
+                            type: 'text',
+                            onChange: this.handleSearchChange,
+                            style: _extends({}, styles.search)
+                            //onFocus={() => this.handleSearchFocus(true)}
+                            , onBlur: function onBlur() {
+                                return _this4.handleSearchFocus(false);
+                            }
+                        }),
+                        _react2.default.createElement(
+                            'div',
+                            { style: _extends({}, styles.searchIcon) },
+                            !!searchText ? _react2.default.createElement(
+                                'svg',
+                                { onClick: this.clearSearchText, width: '24', height: '24', viewBox: '0 0 24 24', style: { cursor: 'pointer' } },
+                                _react2.default.createElement(
+                                    'defs',
+                                    null,
+                                    _react2.default.createElement('path', { id: 'multiselect-clear', d: 'M0 9a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9zm12.808 2.885a.653.653 0 1 1-.923.924L9 9.924l-2.885 2.885a.651.651 0 0 1-.924 0 .654.654 0 0 1 0-.924L8.076 9 5.19 6.115a.654.654 0 0 1 .924-.923L9 8.076l2.885-2.884a.653.653 0 1 1 .923.923L9.924 9l2.884 2.885z' })
+                                ),
+                                _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', opacity: '.4', transform: 'translate(3 3)', xlinkHref: '#multiselect-clear' })
+                            ) : _react2.default.createElement(
+                                'svg',
+                                { width: '20', height: '20', viewBox: '0 0 20 20', style: { marginTop: '4px' } },
+                                _react2.default.createElement(
+                                    'defs',
+                                    null,
+                                    _react2.default.createElement('path', { id: 'multiselect-search', d: 'M13.436 12.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM7.5 13a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z' })
+                                ),
+                                _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', transform: 'translate(1 1)', xlinkHref: '#multiselect-search' })
+                            )
+                        )
+                    ),
+                    hasSelectAll && _react2.default.createElement(_selectItem2.default, {
+                        focused: focusIndex === 0,
+                        checked: this.allAreSelected(),
+                        option: selectAllOption,
+                        allOption: true,
+                        onSelectionChanged: this.selectAllChanged,
+                        onClick: function onClick() {
+                            return _this4.handleItemClicked(0);
                         },
-                        value: searchText,
-                        className: 'dropdown-search-input',
-                        placeholder: (0, _getString2.default)("search", overrideStrings),
-                        type: 'text',
-                        onChange: this.handleSearchChange,
-                        style: _extends({}, styles.search)
-                        //onFocus={() => this.handleSearchFocus(true)}
-                        , onBlur: function onBlur() {
-                            return _this3.handleSearchFocus(false);
+                        ItemRenderer: ItemRenderer,
+                        disabled: disabled,
+                        onHoverChanged: function onHoverChanged() {
+                            _this4.handleHoverChanged(0);
                         }
                     }),
-                    _react2.default.createElement(
-                        'div',
-                        { style: _extends({}, styles.searchIcon) },
-                        !!searchText ? _react2.default.createElement(
-                            'svg',
-                            { onClick: this.clearSearchText, width: '24', height: '24', viewBox: '0 0 24 24', style: { cursor: 'pointer' } },
-                            _react2.default.createElement(
-                                'defs',
-                                null,
-                                _react2.default.createElement('path', { id: 'multiselect-clear', d: 'M0 9a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9zm12.808 2.885a.653.653 0 1 1-.923.924L9 9.924l-2.885 2.885a.651.651 0 0 1-.924 0 .654.654 0 0 1 0-.924L8.076 9 5.19 6.115a.654.654 0 0 1 .924-.923L9 8.076l2.885-2.884a.653.653 0 1 1 .923.923L9.924 9l2.884 2.885z' })
-                            ),
-                            _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', opacity: '.4', transform: 'translate(3 3)', xlinkHref: '#multiselect-clear' })
-                        ) : _react2.default.createElement(
-                            'svg',
-                            { width: '20', height: '20', viewBox: '0 0 20 20', style: { marginTop: '4px' } },
-                            _react2.default.createElement(
-                                'defs',
-                                null,
-                                _react2.default.createElement('path', { id: 'multiselect-search', d: 'M13.436 12.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM7.5 13a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z' })
-                            ),
-                            _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', transform: 'translate(1 1)', xlinkHref: '#multiselect-search' })
-                        )
-                    )
-                ),
-                hasSelectAll && _react2.default.createElement(_selectItem2.default, {
-                    focused: focusIndex === 0,
-                    checked: this.allAreSelected(),
-                    option: selectAllOption,
-                    allOption: true,
-                    onSelectionChanged: this.selectAllChanged,
-                    onClick: function onClick() {
-                        return _this3.handleItemClicked(0);
-                    },
-                    ItemRenderer: ItemRenderer,
-                    disabled: disabled,
-                    onHoverChanged: function onHoverChanged() {
-                        _this3.handleHoverChanged(0);
-                    }
-                }),
-                _react2.default.createElement(_selectList2.default, _extends({}, this.props, {
-                    options: this.filteredOptions(),
-                    focusIndex: focusIndex - 1,
-                    onClick: function onClick(e, index) {
-                        return _this3.handleItemClicked(index + 1);
-                    },
-                    ItemRenderer: ItemRenderer,
-                    disabled: disabled,
-                    onHoverChanged: function onHoverChanged(index) {
-                        _this3.handleHoverChanged(index + 1);
-                    }
-                }))
+                    _react2.default.createElement(_selectList2.default, _extends({}, this.props, {
+                        options: this.filteredOptions(),
+                        focusIndex: focusIndex - 1,
+                        onClick: function onClick(e, index) {
+                            return _this4.handleItemClicked(index + 1);
+                        },
+                        ItemRenderer: ItemRenderer,
+                        disabled: disabled,
+                        onHoverChanged: function onHoverChanged(index) {
+                            _this4.handleHoverChanged(index + 1);
+                        }
+                    }))
+                )
             );
         }
     }]);
@@ -1282,10 +1323,15 @@ var MultiSelect = function (_Component) {
                     dropdownContentRef.style.top = '';
                     dropdownContentRef.style.maxHeight = 0;
                     dropdownContentRef.style.transition = 'all .25s';
+                    dropdownContentRef.style.height = contentOffset.height + 'px';
 
                     if (clientHeight < containerOffset.bottom + contentOffset.height - 20) {
                         dropdownContentRef.style.left = containerOffset.left - backDropOffset.left + 'px';
-                        dropdownContentRef.style.bottom = '20px';
+                        if (clientHeight < backDropOffset.bottom) {
+                            dropdownContentRef.style.bottom = backDropOffset.bottom - clientHeight + 20 + 'px';
+                        } else {
+                            dropdownContentRef.style.bottom = '20px';
+                        }
                     } else {
                         dropdownContentRef.style.top = containerOffset.bottom - backDropOffset.top + 'px';
                         dropdownContentRef.style.left = containerOffset.left - backDropOffset.left + 'px';
@@ -1293,6 +1339,12 @@ var MultiSelect = function (_Component) {
 
                     dropdownContentRef.style.visibility = 'visible';
                     dropdownContentRef.style.maxHeight = '300px';
+                    if (_this.dropdownRef.selectPanel) {
+                        _this.dropdownRef.selectPanel.focus();
+                        if (_this.dropdownRef.selectPanel.scrollbarRef) {
+                            _this.dropdownRef.selectPanel.scrollbarRef.update();
+                        }
+                    }
                 }
             } else {
                 _this.backDropRef.style.display = 'none';
@@ -1407,7 +1459,8 @@ var MultiSelect = function (_Component) {
                 filterOptions = _props3.filterOptions,
                 shouldToggleOnHover = _props3.shouldToggleOnHover,
                 hasSelectAll = _props3.hasSelectAll,
-                overrideStrings = _props3.overrideStrings;
+                overrideStrings = _props3.overrideStrings,
+                scrollbarComponent = _props3.scrollbarComponent;
 
 
             return _react2.default.createElement(
@@ -1438,7 +1491,8 @@ var MultiSelect = function (_Component) {
                                 disabled: disabled,
                                 disableSearch: disableSearch,
                                 filterOptions: filterOptions,
-                                overrideStrings: overrideStrings
+                                overrideStrings: overrideStrings,
+                                scrollbarComponent: scrollbarComponent
                             },
                             disabled: disabled,
                             arrowIcon: true,

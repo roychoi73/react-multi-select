@@ -24,13 +24,25 @@ type Props = {
     hasSelectAll: boolean,
     filterOptions?: (options: Array<Option>, filter: string) => Array<Option>,
     overrideStrings?: {[string]: string},
-    onToggleExpanded?: (expanded: boolean) => void
+    onToggleExpanded?: (expanded: boolean) => void,
+    scrollbarComponent?: any
 };
 
 type State = {
     searchHasFocus: boolean,
     searchText: string,
     focusIndex: number
+};
+
+class defaultScrollbarComponent extends Component {
+    scrollTop = () => {}
+    update = () => {}
+
+    render = () => {
+        return <div>
+            {this.props.children}
+        </div>;
+    };
 };
 
 class SelectPanel extends Component<Props, State> {
@@ -42,6 +54,7 @@ class SelectPanel extends Component<Props, State> {
     }
 
     inputRef = null;
+    scrollbarRef = null;
 
     expanded = false;
 
@@ -49,6 +62,14 @@ class SelectPanel extends Component<Props, State> {
     //     if (typeof this.props.onToggleExpanded === 'function') {
     //         this.props.onToggleExpanded(this.expanded);
     //     }
+    // }
+
+    // componentDidMount() {
+    //     document.body.addEventListener()
+    // }
+
+    // componentWillReceiveProps() {
+
     // }
 
     selectAll = () => {
@@ -198,6 +219,12 @@ class SelectPanel extends Component<Props, State> {
         this.updateFocus(index - this.state.focusIndex);
     }
 
+    focus = () => {
+        if (this.expanded && this.inputRef) {
+            this.inputRef.focus();
+        }
+    }
+
     expandedChange = (expanded) => {
         if (!this.expanded && expanded) {
             this.expanded = expanded;
@@ -230,6 +257,7 @@ class SelectPanel extends Component<Props, State> {
             disableSearch,
             hasSelectAll,
             overrideStrings,
+            scrollbarComponent = defaultScrollbarComponent,
         } = this.props;
 
         const selectAllOption = {
@@ -237,75 +265,84 @@ class SelectPanel extends Component<Props, State> {
             value: "",
         };
 
-        return <div
-            className="select-panel"
-            style={styles.panel}
-            role="listbox"
-            onKeyDown={this.handleKeyDown}
-            ref={ref => this.panelRef = ref}
+        const Scrollbars = scrollbarComponent;
+
+        return <Scrollbars
+            ref={ref => {
+                this.scrollbarRef = ref;
+            }}
         >
-            {!disableSearch && <div style={styles.searchContainer}>
-                <input
-                    autoFocus={true}
-                    ref={ref => {
-                        this.inputRef = ref;
+            <div
+                className="select-panel"
+                style={styles.panel}
+                role="listbox"
+                //onKeyDown={this.handleKeyDown}
+                onKeyDownCapture={this.handleKeyDown}
+                ref={ref => this.panelRef = ref}
+            >
+                {!disableSearch && <div style={styles.searchContainer}>
+                    <input
+                        autoFocus={true}
+                        ref={ref => {
+                            this.inputRef = ref;
+                        }}
+                        value={searchText}
+                        className="dropdown-search-input"
+                        placeholder={getString("search", overrideStrings)}
+                        type="text"
+                        onChange={this.handleSearchChange}
+                        style={{...styles.search}}
+                        //onFocus={() => this.handleSearchFocus(true)}
+                        onBlur={() => this.handleSearchFocus(false)}
+                    />
+                    <div style={{...styles.searchIcon}}>
+                        {!!searchText ? (
+                            <svg onClick={this.clearSearchText} width="24" height="24" viewBox="0 0 24 24" style={{cursor: 'pointer'}}>
+                                <defs>
+                                    <path id="multiselect-clear" d="M0 9a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9zm12.808 2.885a.653.653 0 1 1-.923.924L9 9.924l-2.885 2.885a.651.651 0 0 1-.924 0 .654.654 0 0 1 0-.924L8.076 9 5.19 6.115a.654.654 0 0 1 .924-.923L9 8.076l2.885-2.884a.653.653 0 1 1 .923.923L9.924 9l2.884 2.885z"/>
+                                </defs>
+                                <use fill="#6D7381" fillRule="nonzero" opacity=".4" transform="translate(3 3)" xlinkHref="#multiselect-clear"/>
+                            </svg>
+                        ) : (
+                            <svg width="20" height="20" viewBox="0 0 20 20" style={{marginTop: '4px'}}>
+                                <defs>
+                                    <path id="multiselect-search" d="M13.436 12.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM7.5 13a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z"/>
+                                </defs>
+                                <use fill="#6D7381" fillRule="nonzero" transform="translate(1 1)" xlinkHref="#multiselect-search"/>
+                            </svg>
+                        )}
+                    </div>
+                </div>}
+
+                {hasSelectAll &&
+                <SelectItem
+                    focused={focusIndex === 0}
+                    checked={this.allAreSelected()}
+                    option={selectAllOption}
+                    allOption
+                    onSelectionChanged={this.selectAllChanged}
+                    onClick={() => this.handleItemClicked(0)}
+                    ItemRenderer={ItemRenderer}
+                    disabled={disabled}
+                    onHoverChanged={() => {
+                        this.handleHoverChanged(0);
                     }}
-                    value={searchText}
-                    className="dropdown-search-input"
-                    placeholder={getString("search", overrideStrings)}
-                    type="text"
-                    onChange={this.handleSearchChange}
-                    style={{...styles.search}}
-                    //onFocus={() => this.handleSearchFocus(true)}
-                    onBlur={() => this.handleSearchFocus(false)}
                 />
-                <div style={{...styles.searchIcon}}>
-                    {!!searchText ? (
-                        <svg onClick={this.clearSearchText} width="24" height="24" viewBox="0 0 24 24" style={{cursor: 'pointer'}}>
-                            <defs>
-                                <path id="multiselect-clear" d="M0 9a9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9 9 9 0 0 0-9 9zm12.808 2.885a.653.653 0 1 1-.923.924L9 9.924l-2.885 2.885a.651.651 0 0 1-.924 0 .654.654 0 0 1 0-.924L8.076 9 5.19 6.115a.654.654 0 0 1 .924-.923L9 8.076l2.885-2.884a.653.653 0 1 1 .923.923L9.924 9l2.884 2.885z"/>
-                            </defs>
-                            <use fill="#6D7381" fillRule="nonzero" opacity=".4" transform="translate(3 3)" xlinkHref="#multiselect-clear"/>
-                        </svg>
-                    ) : (
-                        <svg width="20" height="20" viewBox="0 0 20 20" style={{marginTop: '4px'}}>
-                            <defs>
-                                <path id="multiselect-search" d="M13.436 12.085l3.94 4.01a1 1 0 0 1-1.425 1.402l-3.938-4.006a7.5 7.5 0 1 1 1.423-1.406zM7.5 13a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z"/>
-                            </defs>
-                            <use fill="#6D7381" fillRule="nonzero" transform="translate(1 1)" xlinkHref="#multiselect-search"/>
-                        </svg>
-                    )}
-                </div>
-            </div>}
+                }
 
-            {hasSelectAll &&
-              <SelectItem
-                  focused={focusIndex === 0}
-                  checked={this.allAreSelected()}
-                  option={selectAllOption}
-                  allOption
-                  onSelectionChanged={this.selectAllChanged}
-                  onClick={() => this.handleItemClicked(0)}
-                  ItemRenderer={ItemRenderer}
-                  disabled={disabled}
-                  onHoverChanged={() => {
-                    this.handleHoverChanged(0);
-                  }}
-              />
-            }
-
-            <SelectList
-                {...this.props}
-                options={this.filteredOptions()}
-                focusIndex={focusIndex - 1}
-                onClick={(e, index) => this.handleItemClicked(index + 1)}
-                ItemRenderer={ItemRenderer}
-                disabled={disabled}
-                onHoverChanged={(index) => {
-                    this.handleHoverChanged(index + 1);
-                }}
-            />
-        </div>;
+                <SelectList
+                    {...this.props}
+                    options={this.filteredOptions()}
+                    focusIndex={focusIndex - 1}
+                    onClick={(e, index) => this.handleItemClicked(index + 1)}
+                    ItemRenderer={ItemRenderer}
+                    disabled={disabled}
+                    onHoverChanged={(index) => {
+                        this.handleHoverChanged(index + 1);
+                    }}
+                />
+            </div>
+        </Scrollbars>;
     }
 }
 

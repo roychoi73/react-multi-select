@@ -40,7 +40,8 @@ type Props = {
     filterOptions?: (options: Array<Option>, filter: string) => Array<Option>,
     overrideStrings?: {[string]: string},
     optionHeight?: number,
-    searchHeight?: number
+    searchHeight?: number,
+    scrollbarComponent?: any
 };
 
 class MultiSelect extends Component<Props> {
@@ -155,10 +156,15 @@ class MultiSelect extends Component<Props> {
                 dropdownContentRef.style.top = '';
                 dropdownContentRef.style.maxHeight = 0;
                 dropdownContentRef.style.transition = 'all .25s';
+                dropdownContentRef.style.height = `${contentOffset.height}px`
 
                 if (clientHeight < containerOffset.bottom + contentOffset.height - 20) {
                     dropdownContentRef.style.left = `${containerOffset.left - backDropOffset.left}px`;
-                    dropdownContentRef.style.bottom = '20px';
+                    if (clientHeight < backDropOffset.bottom) {
+                        dropdownContentRef.style.bottom = `${backDropOffset.bottom - clientHeight + 20}px`;
+                    } else {
+                        dropdownContentRef.style.bottom = '20px';
+                    }
                 } else {
                     dropdownContentRef.style.top = `${containerOffset.bottom - backDropOffset.top}px`;
                     dropdownContentRef.style.left = `${containerOffset.left - backDropOffset.left}px`;
@@ -166,6 +172,12 @@ class MultiSelect extends Component<Props> {
 
                 dropdownContentRef.style.visibility = 'visible';
                 dropdownContentRef.style.maxHeight = '300px';
+                if (this.dropdownRef.selectPanel) {
+                    this.dropdownRef.selectPanel.focus();
+                    if (this.dropdownRef.selectPanel.scrollbarRef){
+                        this.dropdownRef.selectPanel.scrollbarRef.update();
+                    }
+                }
             }
         } else {
             this.backDropRef.style.display = 'none';
@@ -177,8 +189,6 @@ class MultiSelect extends Component<Props> {
             dropdownContentRef.style.transition = 'unset';
             dropdownContentRef.style.visibility = 'hidden';
         }
-
-        
     }
 
     handleBackDropClick = (event) => {
@@ -205,6 +215,7 @@ class MultiSelect extends Component<Props> {
             shouldToggleOnHover,
             hasSelectAll,
             overrideStrings,
+            scrollbarComponent,
         } = this.props;
 
         return <div className="multi-select">
@@ -230,6 +241,7 @@ class MultiSelect extends Component<Props> {
                         disableSearch,
                         filterOptions,
                         overrideStrings,
+                        scrollbarComponent,
                     }}
                     disabled={disabled}
                     arrowIcon
@@ -248,7 +260,7 @@ class MultiSelect extends Component<Props> {
                 ref={ref => {
                     this.backDropRef = ref;
                 }}
-            ></div>
+            />
         </div>;
     }
 }

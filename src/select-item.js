@@ -117,6 +117,13 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
     //     e.preventDefault();
     // }
 
+    updateHover = (hover) => {
+        //this.setState({hovered: hover});
+        if (hover) {
+            this.props.onHoverChanged();
+        }
+    }
+
     render() {
         const {ItemRenderer, option, checked, focused, disabled, allOption} = this.props;
         const {hovered} = this.state;
@@ -127,7 +134,7 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
         const allOptionStyle = allOption ? styles.allOptionStyle : null;
 
         return <label
-            className="select-item"
+            className={`select-item${focused || hovered ? ' focused' : ''}`}
             role="option"
             aria-selected={checked}
             selected={checked}
@@ -144,13 +151,6 @@ class SelectItem extends Component<SelectItemProps, SelectItemState> {
                 disabled={disabled}
             />
         </label>;
-    }
-
-    updateHover = (hover) => {
-        //this.setState({hovered: hover});
-        if (hover) {
-            this.props.onHoverChanged();
-        }
     }
 }
 

@@ -189,18 +189,6 @@ var Dropdown = function (_Component) {
             // document.removeEventListener('mousedown', this.handleDocumentClick);
         }
     }, {
-        key: 'renderPanel',
-        value: function renderPanel() {
-            var _props = this.props,
-                ContentComponent = _props.contentComponent,
-                contentProps = _props.contentProps;
-
-            return _react2.default.createElement('div', {
-                className: 'dropdown-content',
-                style: styles.panelContainer
-            }, _react2.default.createElement(ContentComponent, contentProps));
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this4 = this;
@@ -280,9 +268,7 @@ var Dropdown = function (_Component) {
                 fill: '#6D7381',
                 'fillRule': 'nonzero',
                 d: 'M6.336 9.34a1.17 1.17 0 0 0-.01 1.63l.01.01 4.45 4.51a1.7 1.7 0 0 0 2.427 0l4.45-4.51a1.17 1.17 0 0 0 0-1.64 1.132 1.132 0 0 0-1.617 0L12 13.441l-4.047-4.1a1.132 1.132 0 0 0-1.617 0'
-            }))) : _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle) }))),
-            //expanded && this.renderPanel()
-            _react2.default.createElement('div', {
+            }))) : _react2.default.createElement('span', { style: _extends({}, arrowStyle, focusedArrowStyle) }))), _react2.default.createElement('div', {
                 className: 'dropdown-content',
                 style: _extends({}, styles.panelContainer, !expanded ? styles.panelContainerCollapsed : {}),
                 ref: function ref(_ref3) {
@@ -422,7 +408,9 @@ var styles = {
         minWidth: '100%',
         zIndex: 100,
         overflowY: 'auto',
-        visibility: 'hidden'
+        visibility: 'hidden',
+        msOverflowStyle: '-ms-autohiding-scrollbar',
+        display: 'flex'
         // transition: 'all .25s',
         // transform: 'translate3d(0, 0, 0)', // 'scale(1)',
     },

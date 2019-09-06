@@ -165,7 +165,7 @@ var SelectItem = function (_Component2) {
             return _react2.default.createElement(
                 "label",
                 {
-                    className: "select-item",
+                    className: "select-item" + (focused || hovered ? ' focused' : ''),
                     role: "option",
                     "aria-selected": checked,
                     selected: checked
