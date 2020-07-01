@@ -204,7 +204,8 @@ var Dropdown = function (_Component) {
                 disabled = _props2.disabled,
                 arrowIcon = _props2.arrowIcon,
                 ContentComponent = _props2.contentComponent,
-                contentProps = _props2.contentProps;
+                contentProps = _props2.contentProps,
+                headerStyle = _props2.headerStyle;
             //contentStyle = _props2.contentStyle || {};
 
             var expandedHeaderStyle = expanded ? styles.dropdownHeaderExpanded : undefined;
@@ -222,7 +223,7 @@ var Dropdown = function (_Component) {
             var focusedArrowStyle = hasFocus ? styles.dropdownArrowDownFocused : undefined;
 
             var headingStyle = _extends({}, styles.dropdownChildren, disabled ? styles.disabledDropdownChildren : {});
-
+            var dropdownHeaderStyle = headerStyle ? _extends({}, styles.dropdownHeader, headerStyle) : styles.dropdownHeader;
             return _react2.default.createElement('div', {
                 className: 'dropdown',
                 tabIndex: '0',
@@ -241,7 +242,7 @@ var Dropdown = function (_Component) {
                 onMouseLeave: this.handleMouseLeave
             }, _react2.default.createElement('div', {
                 className: 'dropdown-heading',
-                style: _extends({}, styles.dropdownHeader, focusedHeaderStyle),
+                style: _extends({}, dropdownHeaderStyle, focusedHeaderStyle),
                 onClick: function onClick() {
                     return _this2.toggleExpanded();
                 }

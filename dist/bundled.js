@@ -550,7 +550,8 @@ var Dropdown = function (_Component) {
                 disabled = _props2.disabled,
                 arrowIcon = _props2.arrowIcon,
                 ContentComponent = _props2.contentComponent,
-                contentProps = _props2.contentProps;
+                contentProps = _props2.contentProps,
+                headerStyle = _props2.headerStyle;
             //contentStyle = _props2.contentStyle || {};
 
             var expandedHeaderStyle = expanded ? styles.dropdownHeaderExpanded : undefined;
@@ -568,7 +569,7 @@ var Dropdown = function (_Component) {
             var focusedArrowStyle = hasFocus ? styles.dropdownArrowDownFocused : undefined;
 
             var headingStyle = _extends({}, styles.dropdownChildren, disabled ? styles.disabledDropdownChildren : {});
-
+            var dropdownHeaderStyle = headerStyle ? _extends({}, styles.dropdownHeader, headerStyle) : styles.dropdownHeader;
             return _react2.default.createElement('div', {
                 className: 'dropdown',
                 tabIndex: '0',
@@ -587,7 +588,7 @@ var Dropdown = function (_Component) {
                 onMouseLeave: this.handleMouseLeave
             }, _react2.default.createElement('div', {
                 className: 'dropdown-heading',
-                style: _extends({}, styles.dropdownHeader, focusedHeaderStyle),
+                style: _extends({}, dropdownHeaderStyle, focusedHeaderStyle),
                 onClick: function onClick() {
                     return _this2.toggleExpanded();
                 }
@@ -865,7 +866,8 @@ var SelectPanel = function (_Component2) {
         return _ret2 = (_temp2 = (_this2 = _possibleConstructorReturn(this, (_ref2 = SelectPanel.__proto__ || Object.getPrototypeOf(SelectPanel)).call.apply(_ref2, [this].concat(args))), _this2), _this2.state = {
             searchHasFocus: false,
             searchText: "",
-            focusIndex: -1
+            focusIndex: -1,
+            clearAllHover: false
         }, _this2.inputRef = null, _this2.scrollbarRef = null, _this2.expanded = false, _this2.selectAll = function () {
             var _this2$props = _this2.props,
                 onSelectedChanged = _this2$props.onSelectedChanged,
@@ -986,6 +988,10 @@ var SelectPanel = function (_Component2) {
             _this2.setState({
                 searchText: ''
             });
+        }, _this2.handleClearAllButtonFocus = function (clearAllHover) {
+            _this2.setState({
+                clearAllHover: clearAllHover
+            });
         }, _temp2), _possibleConstructorReturn(_this2, _ret2);
     }
 
@@ -1064,13 +1070,15 @@ var SelectPanel = function (_Component2) {
 
             var _state = this.state,
                 focusIndex = _state.focusIndex,
-                searchText = _state.searchText;
+                searchText = _state.searchText,
+                clearAllHover = _state.clearAllHover;
             var _props3 = this.props,
                 ItemRenderer = _props3.ItemRenderer,
                 selectAllLabel = _props3.selectAllLabel,
                 disabled = _props3.disabled,
                 disableSearch = _props3.disableSearch,
                 hasSelectAll = _props3.hasSelectAll,
+                hasClearAll = _props3.hasClearAll,
                 overrideStrings = _props3.overrideStrings,
                 _props3$scrollbarComp = _props3.scrollbarComponent,
                 scrollbarComponent = _props3$scrollbarComp === undefined ? defaultScrollbarComponent : _props3$scrollbarComp;
@@ -1080,9 +1088,9 @@ var SelectPanel = function (_Component2) {
                 label: selectAllLabel || (0, _getString2.default)("selectAll", overrideStrings),
                 value: ""
             };
-
+            var clearAllContainerStyle = disableSearch ? Object.assign({}, styles.clearAllButtonContainer, { paddingTop: '12px' }) : styles.clearAllButtonContainer;
+            var clearAllButtonStyle = clearAllHover ? Object.assign({}, styles.clearAllButton, { textDecoration: 'underline' }) : styles.clearAllButton;
             var Scrollbars = scrollbarComponent;
-
             return _react2.default.createElement(
                 Scrollbars,
                 {
@@ -1143,6 +1151,20 @@ var SelectPanel = function (_Component2) {
                                 ),
                                 _react2.default.createElement('use', { fill: '#6D7381', fillRule: 'nonzero', transform: 'translate(1 1)', xlinkHref: '#multiselect-search' })
                             )
+                        )
+                    ),
+                    hasClearAll && _react2.default.createElement(
+                        'div',
+                        { style: clearAllContainerStyle },
+                        _react2.default.createElement(
+                            'span',
+                            { style: clearAllButtonStyle, onClick: this.selectNone, onMouseEnter: function onMouseEnter() {
+                                    return _this4.handleClearAllButtonFocus(true);
+                                },
+                                onMouseLeave: function onMouseLeave() {
+                                    return _this4.handleClearAllButtonFocus(false);
+                                } },
+                            'Clear All'
                         )
                     ),
                     hasSelectAll && _react2.default.createElement(_selectItem2.default, {
@@ -1216,6 +1238,17 @@ var styles = {
         height: '24px',
         top: '18px',
         right: '15px'
+    },
+    clearAllButton: {
+        border: 'none',
+        fontSize: '13px',
+        color: '#4285f4',
+        cursor: 'pointer',
+        margin: '0px 20px'
+    },
+    clearAllButtonContainer: {
+        borderBottom: '1px solid #6d738133',
+        paddingBottom: '11px'
     }
 };
 
@@ -1458,6 +1491,8 @@ var MultiSelect = function (_Component) {
                 disableSearch = _props3.disableSearch,
                 filterOptions = _props3.filterOptions,
                 shouldToggleOnHover = _props3.shouldToggleOnHover,
+                hasClearAll = _props3.hasClearAll,
+                headerStyle = _props3.headerStyle,
                 hasSelectAll = _props3.hasSelectAll,
                 overrideStrings = _props3.overrideStrings,
                 scrollbarComponent = _props3.scrollbarComponent;
@@ -1480,11 +1515,13 @@ var MultiSelect = function (_Component) {
                             isLoading: isLoading,
                             contentComponent: _selectPanel2.default,
                             shouldToggleOnHover: shouldToggleOnHover,
+                            headerStyle: headerStyle,
                             contentProps: {
                                 ItemRenderer: ItemRenderer,
                                 options: options,
                                 selected: selected,
                                 hasSelectAll: hasSelectAll,
+                                hasClearAll: hasClearAll,
                                 selectAllLabel: selectAllLabel,
                                 onSelectedChanged: this.handleSelectedChanged,
                                 onToggleExpanded: this.handleToggleExpanded,
@@ -1521,6 +1558,7 @@ var MultiSelect = function (_Component) {
 
 MultiSelect.defaultProps = {
     hasSelectAll: true,
+    hasClearAll: false,
     shouldToggleOnHover: false,
     optionHeight: 41,
     searchHeight: 62

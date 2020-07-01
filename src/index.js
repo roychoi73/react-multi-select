@@ -37,6 +37,7 @@ type Props = {
     disableSearch?: boolean,
     shouldToggleOnHover: boolean,
     hasSelectAll: boolean,
+    hasClearAll: boolean,
     filterOptions?: (options: Array<Option>, filter: string) => Array<Option>,
     overrideStrings?: {[string]: string},
     optionHeight?: number,
@@ -47,6 +48,7 @@ type Props = {
 class MultiSelect extends Component<Props> {
     static defaultProps = {
         hasSelectAll: true,
+        hasClearAll: false,
         shouldToggleOnHover: false,
         optionHeight: 41,
         searchHeight: 62,
@@ -213,6 +215,8 @@ class MultiSelect extends Component<Props> {
             disableSearch,
             filterOptions,
             shouldToggleOnHover,
+            hasClearAll,
+            headerStyle,
             hasSelectAll,
             overrideStrings,
             scrollbarComponent,
@@ -229,11 +233,13 @@ class MultiSelect extends Component<Props> {
                     isLoading={isLoading}
                     contentComponent={SelectPanel}
                     shouldToggleOnHover={shouldToggleOnHover}
+                    headerStyle={headerStyle}
                     contentProps={{
                         ItemRenderer,
                         options,
                         selected,
                         hasSelectAll,
+                        hasClearAll,
                         selectAllLabel,
                         onSelectedChanged: this.handleSelectedChanged,
                         onToggleExpanded: this.handleToggleExpanded,

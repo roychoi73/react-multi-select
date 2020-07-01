@@ -35,6 +35,9 @@ class StatefulSelectPanel extends Component<{}, State> {
                 options={options}
                 onSelectedChanged={this.handleSelectedChanged.bind(this)}
                 hasSelectAll
+                hasClearAll
+                disableSearch
+                headerStyle={{height:20}}
                 selected={selected}
             />
 

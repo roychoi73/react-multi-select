@@ -22,6 +22,7 @@ type Props = {
     disabled?: boolean,
     disableSearch?: boolean,
     hasSelectAll: boolean,
+    hasClearAll: boolean,
     filterOptions?: (options: Array<Option>, filter: string) => Array<Option>,
     overrideStrings?: {[string]: string},
     onToggleExpanded?: (expanded: boolean) => void,
@@ -51,6 +52,7 @@ class SelectPanel extends Component<Props, State> {
         searchHasFocus: false,
         searchText: "",
         focusIndex: -1,
+        clearAllHover: false
     }
 
     inputRef = null;
@@ -249,14 +251,21 @@ class SelectPanel extends Component<Props, State> {
         });
     }
 
+    handleClearAllButtonFocus = (clearAllHover: boolean) => {
+        this.setState({
+            clearAllHover,
+        });
+    }
+
     render() {
-        const {focusIndex, searchText} = this.state;
+        const {focusIndex, searchText, clearAllHover} = this.state;
         const {
             ItemRenderer,
             selectAllLabel,
             disabled,
             disableSearch,
             hasSelectAll,
+            hasClearAll,
             overrideStrings,
             scrollbarComponent = defaultScrollbarComponent,
         } = this.props;
@@ -265,9 +274,9 @@ class SelectPanel extends Component<Props, State> {
             label: selectAllLabel || getString("selectAll", overrideStrings),
             value: "",
         };
-
+        const clearAllContainerStyle = disableSearch ? Object.assign({}, styles.clearAllButtonContainer, {paddingTop:'12px'}) : styles.clearAllButtonContainer
+        const clearAllButtonStyle = clearAllHover ? Object.assign({},styles.clearAllButton,{textDecoration:'underline'}): styles.clearAllButton;
         const Scrollbars = scrollbarComponent;
-
         return <Scrollbars
             ref={ref => {
                 this.scrollbarRef = ref;
@@ -314,7 +323,15 @@ class SelectPanel extends Component<Props, State> {
                         )}
                     </div>
                 </div>}
-
+                {
+                    hasClearAll &&(
+                        <div style={clearAllContainerStyle}>
+                            <span style={clearAllButtonStyle} onClick={this.selectNone} onMouseEnter={()=>this.handleClearAllButtonFocus(true)} 
+                                onMouseLeave={()=>this.handleClearAllButtonFocus(false)}>Clear All</span>
+                        </div>
+                        
+                    )
+                }
                 {hasSelectAll &&
                 <SelectItem
                     focused={focusIndex === 0}
@@ -384,6 +401,17 @@ const styles = {
         top: '18px',
         right: '15px',
     },
+    clearAllButton:{
+        border:'none',
+        fontSize:'13px',
+        color:'#4285f4',
+        cursor:'pointer',
+        margin: '0px 20px',
+    },
+    clearAllButtonContainer:{
+        borderBottom:'1px solid #6d738133',
+        paddingBottom:'11px'
+    }
 };
 
 export default SelectPanel;

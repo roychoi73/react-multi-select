@@ -230,6 +230,8 @@ var MultiSelect = function (_Component) {
                 disableSearch = _props3.disableSearch,
                 filterOptions = _props3.filterOptions,
                 shouldToggleOnHover = _props3.shouldToggleOnHover,
+                hasClearAll = _props3.hasClearAll,
+                headerStyle = _props3.headerStyle,
                 hasSelectAll = _props3.hasSelectAll,
                 overrideStrings = _props3.overrideStrings,
                 scrollbarComponent = _props3.scrollbarComponent;
@@ -252,11 +254,13 @@ var MultiSelect = function (_Component) {
                             isLoading: isLoading,
                             contentComponent: _selectPanel2.default,
                             shouldToggleOnHover: shouldToggleOnHover,
+                            headerStyle: headerStyle,
                             contentProps: {
                                 ItemRenderer: ItemRenderer,
                                 options: options,
                                 selected: selected,
                                 hasSelectAll: hasSelectAll,
+                                hasClearAll: hasClearAll,
                                 selectAllLabel: selectAllLabel,
                                 onSelectedChanged: this.handleSelectedChanged,
                                 onToggleExpanded: this.handleToggleExpanded,
@@ -293,6 +297,7 @@ var MultiSelect = function (_Component) {
 
 MultiSelect.defaultProps = {
     hasSelectAll: true,
+    hasClearAll: false,
     shouldToggleOnHover: false,
     optionHeight: 41,
     searchHeight: 62
