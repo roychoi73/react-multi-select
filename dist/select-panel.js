@@ -121,11 +121,11 @@ var SelectPanel = function (_Component2) {
         }, _this2.toggleChecked = function () {
             var focusIndex = _this2.state.focusIndex;
             var _this2$props2 = _this2.props,
-                options = _this2$props2.options,
                 selected = _this2$props2.selected,
                 disabled = _this2$props2.disabled,
                 onSelectedChanged = _this2$props2.onSelectedChanged;
 
+            var options = _this2.filteredOptions();
 
             if (focusIndex === 0) {
                 if (selected.length === options.length) {

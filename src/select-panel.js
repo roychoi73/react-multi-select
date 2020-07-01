@@ -110,7 +110,8 @@ class SelectPanel extends Component<Props, State> {
 
     toggleChecked = () => {
         const {focusIndex} = this.state;
-        const {options, selected, disabled, onSelectedChanged} = this.props;
+        const {selected, disabled, onSelectedChanged} = this.props;
+        const options = this.filteredOptions();
 
         if (focusIndex === 0) {
             if (selected.length === options.length) {
