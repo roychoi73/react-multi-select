@@ -918,6 +918,8 @@ var SelectPanel = function (_Component2) {
                     _this2.selectAll();
                 }
                 return;
+            } else if (focusIndex < 0) {
+                return;
             }
 
             if (disabled) {

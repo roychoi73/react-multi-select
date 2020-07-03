@@ -122,6 +122,8 @@ class SelectPanel extends Component<Props, State> {
                 this.selectAll();
             }
             return;
+        }else if(focusIndex < 0){
+            return;
         }
 
         if (disabled) {
