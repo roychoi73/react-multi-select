@@ -224,6 +224,10 @@ var Dropdown = function (_Component) {
 
             var headingStyle = _extends({}, styles.dropdownChildren, disabled ? styles.disabledDropdownChildren : {});
             var dropdownHeaderStyle = headerStyle ? _extends({}, styles.dropdownHeader, headerStyle) : styles.dropdownHeader;
+            var selected = contentProps.selected;
+            var headerClassName = 'dropdown-heading';
+            headerClassName = selected.length ? headerClassName.concat(' seleted-item') : headerClassName;
+            headerClassName = expanded ? headerClassName.concat(' expanded') : headerClassName;
             return _react2.default.createElement('div', {
                 className: 'dropdown',
                 tabIndex: '0',
@@ -241,7 +245,7 @@ var Dropdown = function (_Component) {
                 onMouseEnter: this.handleMouseEnter,
                 onMouseLeave: this.handleMouseLeave
             }, _react2.default.createElement('div', {
-                className: 'dropdown-heading',
+                className: headerClassName,
                 style: _extends({}, dropdownHeaderStyle, focusedHeaderStyle),
                 onClick: function onClick() {
                     return _this2.toggleExpanded();
