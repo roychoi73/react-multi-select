@@ -325,8 +325,8 @@ class SelectPanel extends Component<Props, State> {
                 </div>}
                 {
                     hasClearAll &&(
-                        <div style={clearAllContainerStyle}>
-                            <span style={clearAllButtonStyle} onClick={this.selectNone} onMouseEnter={()=>this.handleClearAllButtonFocus(true)} 
+                        <div class='clear-all-continer' style={clearAllContainerStyle}>
+                            <span className='clear-all-button' style={clearAllButtonStyle} onClick={this.selectNone} onMouseEnter={()=>this.handleClearAllButtonFocus(true)} 
                                 onMouseLeave={()=>this.handleClearAllButtonFocus(false)}>Clear All</span>
                         </div>
                         

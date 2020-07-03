@@ -192,7 +192,7 @@ const Dropdown = function (_Component) {
             var dropdownHeaderStyle = headerStyle ? _extends({}, styles.dropdownHeader,headerStyle) : styles.dropdownHeader;
             var selected = contentProps.selected;
             var headerClassName = 'dropdown-heading';
-            headerClassName = selected.length ? headerClassName.concat(' seleted-item'):headerClassName;
+            headerClassName = selected.length ? headerClassName.concat(' selected-item'):headerClassName;
             headerClassName = expanded ? headerClassName.concat(' expanded'):headerClassName;
             return _react2.default.createElement(
                 'div',

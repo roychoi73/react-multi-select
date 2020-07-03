@@ -376,10 +376,10 @@ var SelectPanel = function (_Component2) {
                     ),
                     hasClearAll && _react2.default.createElement(
                         'div',
-                        { style: clearAllContainerStyle },
+                        { 'class': 'clear-all-continer', style: clearAllContainerStyle },
                         _react2.default.createElement(
                             'span',
-                            { style: clearAllButtonStyle, onClick: this.selectNone, onMouseEnter: function onMouseEnter() {
+                            { className: 'clear-all-button', style: clearAllButtonStyle, onClick: this.selectNone, onMouseEnter: function onMouseEnter() {
                                     return _this4.handleClearAllButtonFocus(true);
                                 },
                                 onMouseLeave: function onMouseLeave() {

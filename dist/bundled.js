@@ -572,7 +572,7 @@ var Dropdown = function (_Component) {
             var dropdownHeaderStyle = headerStyle ? _extends({}, styles.dropdownHeader, headerStyle) : styles.dropdownHeader;
             var selected = contentProps.selected;
             var headerClassName = 'dropdown-heading';
-            headerClassName = selected.length ? headerClassName.concat(' seleted-item') : headerClassName;
+            headerClassName = selected.length ? headerClassName.concat(' selected-item') : headerClassName;
             headerClassName = expanded ? headerClassName.concat(' expanded') : headerClassName;
             return _react2.default.createElement('div', {
                 className: 'dropdown',
@@ -1159,10 +1159,10 @@ var SelectPanel = function (_Component2) {
                     ),
                     hasClearAll && _react2.default.createElement(
                         'div',
-                        { style: clearAllContainerStyle },
+                        { 'class': 'clear-all-continer', style: clearAllContainerStyle },
                         _react2.default.createElement(
                             'span',
-                            { style: clearAllButtonStyle, onClick: this.selectNone, onMouseEnter: function onMouseEnter() {
+                            { className: 'clear-all-button', style: clearAllButtonStyle, onClick: this.selectNone, onMouseEnter: function onMouseEnter() {
                                     return _this4.handleClearAllButtonFocus(true);
                                 },
                                 onMouseLeave: function onMouseLeave() {
